@@ -2,9 +2,9 @@
 name: Deploy Documentation to Pages
 
 on:
-  # Runs on pushes targeting the default branch
+  # Runs on pushes targeting all branches
   push:
-    branches: ["main"]
+    branches: ["**"]
     paths:
       - 'docs/**'
       - '.github/workflows/docs.yml'
