@@ -1,43 +1,32 @@
 #!/bin/bash
 
-# create-release-packages.sh - Generate multiple package formats for persona-kit
-# Usage: ./create-release-packages.sh [version]
+# create-release-packages.sh - Create release packages for persona-kit
+# Usage: ./create-release-packages.sh <version>
+# Creates template packages for each AI assistant and script type
 
 set -euo pipefail
 
-VERSION=${1:-}
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 <version>"
+    exit 1
+fi
+
+VERSION=$1
+
+# Enable debug mode if DEBUG environment variable is set
+if [ "${DEBUG:-false}" = "true" ]; then
+    set -x
+fi
 
 echo "Creating release packages for persona-kit v${VERSION}..."
 
 # Ensure we're in the project root
 cd "$(git rev-parse --show-toplevel)"
 
-# Clean any existing dist directory
-if [ -d "dist" ]; then
-    echo "Cleaning existing dist directory..."
-    rm -rf dist
-fi
+# Create dist directory if it doesn't exist
+DIST_DIR="dist"
+mkdir -p "$DIST_DIR"
 
-# Create dist directory
-mkdir -p dist
-
-# Install build dependencies if not already installed
-if ! command -v python &> /dev/null; then
-    echo "Error: Python is not installed or not in PATH"
-    exit 1
-fi
-
-# Check if build package is installed
-if ! python -c "import build" &> /dev/null; then
-    echo "Installing build package..."
-    python -m pip install build
-fi
-
-# Build source distribution (sdist) and wheel
-echo "Building source distribution and wheel..."
-python -m build
-
-# Now create the AI assistant template packages
 # List of supported AI assistants
 AI_ASSISTANTS=("copilot" "claude" "gemini" "cursor-agent" "qwen" "opencode" "codex" "windsurf" "kilocode" "auggie" "codebuddy" "roo" "q")
 
@@ -46,7 +35,7 @@ SCRIPT_TYPES=("sh" "ps")
 
 # Create a temporary directory for building packages
 TEMP_DIR=$(mktemp -d)
-echo "Building template packages in temporary directory: $TEMP_DIR"
+echo "Building packages in temporary directory: $TEMP_DIR"
 
 # Copy necessary files to the temporary directory
 cp -r templates/ "$TEMP_DIR/"
@@ -247,7 +236,7 @@ POWERSHELL_EOF
         cp "$TEMP_DIR/templates/implement-cmd-template.md" "$package_dir/implement-cmd.md" 2>/dev/null || echo "implement-cmd-template.md not found"
         
         # Create the final template package as a ZIP file
-        template_name="persona-kit-template-${assistant}-${script_type}-v${VERSION}.zip"
+        template_name="persona-kit-template-${assistant}-${script_type}.zip"
         cd "$package_dir"
         
         # Create the zip package with all files
@@ -267,36 +256,5 @@ echo "Created complete package: $complete_name"
 # Clean up temporary directory
 rm -rf "$TEMP_DIR"
 
-# Verify packages were created
-if [ ! -d "dist" ]; then
-    echo "Error: dist directory was not created"
-    exit 1
-fi
-
-# List created packages
-echo "Created packages:"
-ls -la dist/
-
-# Generate checksums for all packages
-echo "Generating checksums..."
-cd dist
-if command -v sha256sum &> /dev/null; then
-    sha256sum * > checksums.sha256
-    echo "Created checksums.sha256"
-elif command -v shasum &> /dev/null; then
-    shasum -a 256 * > checksums.sha256
-    echo "Created checksums.sha256"
-else
-    echo "Warning: sha256sum/shasum not available - skipping checksum generation"
-fi
-
-# List final packages with checksums
-echo "Final release packages:"
-ls -la
-if [ -f "checksums.sha256" ]; then
-    echo "With checksums file"
-    ls -la checksums.sha256
-fi
-
-echo "Package creation completed successfully!"
-echo "Packages ready for upload in: $(pwd)"
+echo "All packages created in $DIST_DIR/"
+ls -la "$DIST_DIR/"
