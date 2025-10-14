@@ -5,9 +5,13 @@ on:
     branches: [ main ]
     paths:
       - 'src/**'
-      - 'persona-kit/**'
+      - '.persona-kit/**'
       - 'pyproject.toml'
-      - '.github/workflows/**'
+      - 'README.md'
+      - 'LICENSE'
+      - 'CHANGELOG.md'
+      - 'docs/**'
+      - 'scripts/**'
   workflow_dispatch:
 
 jobs:
