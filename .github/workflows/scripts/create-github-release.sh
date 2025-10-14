@@ -5,6 +5,11 @@
 
 set -euo pipefail
 
+# Enable debug mode if DEBUG environment variable is set
+if [ "${DEBUG:-false}" = "true" ]; then
+    set -x
+fi
+
 if [ $# -lt 1 ]; then
     echo "Usage: $0 <version> [release_notes]"
     exit 1
@@ -12,6 +17,53 @@ fi
 
 VERSION=$1
 RELEASE_NOTES_FILE=${2:-}
+
+# Validation functions
+validate_version() {
+    local version=$1
+    if [[ ! $version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+        echo "Error: Version '$version' is not a valid semantic version (expected format: x.y.z)"
+        return 1
+    fi
+    return 0
+}
+
+validate_tag_name() {
+    local tag_name=$1
+    # GitHub tag name requirements:
+    # - Cannot be empty
+    # - Cannot start with a dot
+    # - Cannot contain spaces or special characters except hyphens, underscores, and dots
+    # - Cannot end with a dot
+    # - Cannot be longer than 100 characters
+    if [[ -z "$tag_name" ]]; then
+        echo "Error: Tag name cannot be empty"
+        return 1
+    fi
+    if [[ $tag_name =~ ^\. ]]; then
+        echo "Error: Tag name cannot start with a dot"
+        return 1
+    fi
+    if [[ $tag_name =~ \.\.$ ]]; then
+        echo "Error: Tag name cannot end with a dot"
+        return 1
+    fi
+    if [[ $tag_name =~ [[:space:]] ]]; then
+        echo "Error: Tag name cannot contain spaces"
+        return 1
+    fi
+    if [[ ${#tag_name} -gt 100 ]]; then
+        echo "Error: Tag name cannot be longer than 100 characters"
+        return 1
+    fi
+    return 0
+}
+
+debug_log() {
+    if [ "${DEBUG:-false}" = "true" ]; then
+        echo "[DEBUG] $*" >&2
+    fi
+}
 
 # Get the repository URL from git remote
 REPO_URL=$(git config --get remote.origin.url | sed 's/git@github.com:/https:\/\/github.com\//g' | sed 's/\.git$//')
@@ -24,9 +76,23 @@ fi
 echo "Creating GitHub release for version: ${VERSION}"
 echo "Repository: ${REPO_URL}"
 
+# Validate version format
+if ! validate_version "$VERSION"; then
+    exit 1
+fi
+
+# Validate tag name format
+TAG_NAME="v${VERSION}"
+if ! validate_tag_name "$TAG_NAME"; then
+    exit 1
+fi
+
+debug_log "Version: $VERSION"
+debug_log "Tag name: $TAG_NAME"
+
 # Check if release already exists
-echo "Checking if release v${VERSION} already exists..."
-CHECK_API_URL="${REPO_URL}/releases/tags/v${VERSION}"
+echo "Checking if release ${TAG_NAME} already exists..."
+CHECK_API_URL="${REPO_URL}/releases/tags/${TAG_NAME}"
 
 if [ -n "${GITHUB_TOKEN:-}" ]; then
     check_response=$(curl -s -w "%{http_code}" -o /tmp/release_check.json \
@@ -45,7 +111,7 @@ check_body=$(cat /tmp/release_check.json 2>/dev/null || echo "")
 rm -f /tmp/release_check.json
 
 if [ "$check_http_code" = "200" ]; then
-    echo "Release v${VERSION} already exists - skipping creation"
+    echo "Release ${TAG_NAME} already exists - skipping creation"
     echo "existing=true" >> "$GITHUB_OUTPUT"
     exit 0
 elif [ "$check_http_code" != "404" ]; then
@@ -70,8 +136,8 @@ fi
 # Prepare release data with all recommended fields
 RELEASE_DATA=$(cat <<EOF
 {
-  "tag_name": "v${VERSION}",
-  "name": "v${VERSION}",
+  "tag_name": "${TAG_NAME}",
+  "name": "${TAG_NAME}",
   "body": ${RELEASE_BODY},
   "draft": false,
   "prerelease": false,
@@ -87,6 +153,10 @@ if ! echo "$RELEASE_DATA" | jq empty 2>/dev/null; then
 fi
 
 echo "Release data prepared successfully"
+
+# Debug: Show the exact JSON being sent (only in debug mode)
+debug_log "JSON payload being sent to GitHub API:"
+debug_log "$RELEASE_DATA"
 
 # Create the release using GitHub API
 API_URL="${REPO_URL}/releases"
@@ -104,20 +174,34 @@ body=$(echo "$response" | head -n -1)
 # Handle different HTTP status codes
 case $http_code in
     201)
-        echo "Successfully created GitHub release v${VERSION}"
+        echo "Successfully created GitHub release ${TAG_NAME}"
         ;;
     422)
         echo "Error: Unprocessable Entity (HTTP 422)"
         echo "This usually means:"
-        echo "  - Release already exists"
-        echo "  - Invalid tag name or release data"
-        echo "  - Missing required fields"
-        echo "Response: ${body}"
+        echo "  - Invalid tag name format (must match: ^v?[0-9]+\\.[0-9]+\\.[0-9]+(?:-.*)?$)"
+        echo "  - Tag already exists but not found in check (race condition)"
+        echo "  - Missing required fields in JSON payload"
+        echo "  - Invalid JSON structure"
+        echo ""
+        echo "Debug information:"
+        echo "  Tag name: ${TAG_NAME}"
+        echo "  Version: ${VERSION}"
+        echo "  JSON payload: ${RELEASE_DATA}"
+        echo ""
+        echo "Full API response: ${body}"
+
+        # Try to extract specific error details from GitHub's response
+        if echo "$body" | jq -e '.errors' >/dev/null 2>&1; then
+            echo ""
+            echo "Specific errors from GitHub API:"
+            echo "$body" | jq -r '.errors[]? | "- \(.field // "unknown"): \(.message // .code)' 2>/dev/null || echo "  Could not parse error details"
+        fi
         exit 1
         ;;
     404)
         echo "Error: Not Found (HTTP 404)"
-        echo "This usually means the repository or tag doesn't exist"
+        echo "This usually means the repository doesn't exist or GITHUB_TOKEN is invalid"
         echo "Response: ${body}"
         exit 1
         ;;
@@ -140,7 +224,7 @@ case $http_code in
         exit 1
         ;;
     2*)
-        echo "Successfully created GitHub release v${VERSION}"
+        echo "Successfully created GitHub release ${TAG_NAME}"
         ;;
     *)
         echo "Error: Failed to create GitHub release (HTTP ${http_code})"
@@ -179,5 +263,5 @@ if [ -n "$upload_url" ] && [ "$upload_url" != "null" ] && [ -d "dist" ]; then
     done
 fi
 
-echo "GitHub release v${VERSION} created successfully with assets"
+echo "GitHub release ${TAG_NAME} created successfully with assets"
 echo "new_release=true" >> "$GITHUB_OUTPUT"
