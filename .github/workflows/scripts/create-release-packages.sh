@@ -12,14 +12,32 @@ echo "Creating release packages for persona-kit v${VERSION}..."
 # Ensure we're in the project root
 cd "$(git rev-parse --show-toplevel)"
 
-# Clean any existing dist directory
+# Clean any existing dist directory - try multiple approaches for Windows compatibility
 if [ -d "dist" ]; then
     echo "Cleaning existing dist directory..."
-    rm -rf dist
+    # Try Unix rm first
+    rm -rf dist 2>/dev/null || true
+    # If that fails, try Windows rmdir
+    if [ -d "dist" ]; then
+        rmdir /s /q dist 2>/dev/null || true
+    fi
+    # Check if it still exists
+    if [ -d "dist" ]; then
+        echo "Warning: Could not remove existing dist directory, will try to continue..."
+    fi
 fi
 
-# Create dist directory
-mkdir -p dist
+# Create dist directory and set DIST_DIR to absolute path
+mkdir -p dist 2>/dev/null || mkdir dist 2>/dev/null || echo "Warning: Could not create dist directory, may already exist"
+DIST_DIR="$(pwd)/dist"
+
+# Convert to Windows path format if on Windows (for Git Bash)
+if command -v cygpath &> /dev/null; then
+    DIST_DIR_WIN="$(cygpath -w "$DIST_DIR")"
+    echo "Windows path for dist directory: $DIST_DIR_WIN"
+fi
+
+echo "Using dist directory: $DIST_DIR"
 
 # Install build dependencies if not already installed
 if ! command -v python &> /dev/null; then
@@ -248,10 +266,10 @@ POWERSHELL_EOF
         
         # Create the final template package as a ZIP file
         template_name="persona-kit-template-${assistant}-${script_type}-v${VERSION}.zip"
-        cd "$package_dir"
         
-        # Create the zip package with all files
-        zip -r "${DIST_DIR}/${template_name}" . -x "*.DS_Store" "*/.*.swp" "*/.*.swo" > /dev/null 2>&1 || tar -czf "${DIST_DIR}/${template_name}" . > /dev/null 2>&1
+        # Create the zip package with all files using absolute path
+        (cd "$package_dir" && zip -r "${DIST_DIR}/${template_name}" . -x "*.DS_Store" "*/.*.swp" "*/.*.swo" > /dev/null 2>&1) || \
+        (cd "$package_dir" && tar -czf "${DIST_DIR}/${template_name}" . > /dev/null 2>&1)
         
         echo "Created: $template_name"
     done
@@ -259,8 +277,9 @@ done
 
 # Also create a complete package with all files
 complete_name="persona-kit-complete-${VERSION}.zip"
-cd "$TEMP_DIR"
-zip -r "${DIST_DIR}/${complete_name}" . -x "*.DS_Store" "*/.*.swp" "*/.*.swo" > /dev/null 2>&1 || tar -czf "${DIST_DIR}/${complete_name}" . > /dev/null 2>&1
+# Create the complete package using absolute path
+(cd "$TEMP_DIR" && zip -r "${DIST_DIR}/${complete_name}" . -x "*.DS_Store" "*/.*.swp" "*/.*.swo" > /dev/null 2>&1) || \
+(cd "$TEMP_DIR" && tar -czf "${DIST_DIR}/${complete_name}" . > /dev/null 2>&1)
 
 echo "Created complete package: $complete_name"
 
@@ -279,7 +298,7 @@ ls -la dist/
 
 # Generate checksums for all packages
 echo "Generating checksums..."
-cd dist
+(cd dist && \
 if command -v sha256sum &> /dev/null; then
     sha256sum * > checksums.sha256
     echo "Created checksums.sha256"
@@ -288,14 +307,14 @@ elif command -v shasum &> /dev/null; then
     echo "Created checksums.sha256"
 else
     echo "Warning: sha256sum/shasum not available - skipping checksum generation"
-fi
+fi)
 
 # List final packages with checksums
 echo "Final release packages:"
-ls -la
-if [ -f "checksums.sha256" ]; then
+ls -la dist/
+if [ -f "dist/checksums.sha256" ]; then
     echo "With checksums file"
-    ls -la checksums.sha256
+    ls -la dist/checksums.sha256
 fi
 
 echo "Package creation completed successfully!"
