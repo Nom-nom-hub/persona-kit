@@ -5,7 +5,9 @@ param(
     [Parameter(Mandatory=$true)]
     [string]$FeatureName,
     
-    [switch]$Force = $false
+    [switch]$Force = $false,
+    
+    [switch]$Json = $false
 )
 
 # Enable strict mode
@@ -13,7 +15,7 @@ Set-StrictMode -Version Latest
 
 # Dot-source common functions
 $scriptDir = Split-Path $PSScriptRoot -Parent
-$commonScript = Join-Path $scriptDir "powershell" "common.ps1"
+$commonScript = Join-Path $scriptDir "..\.personakit\scripts\powershell\common.ps1"
 if (Test-Path $commonScript -PathType Leaf) {
     . $commonScript
 } else {
@@ -236,7 +238,34 @@ function Main {
         Log-Error "Feature name is required"
         Log-Info "Usage: $PSCommandPath -FeatureName <feature-name>"
         Log-Info "Example: $PSCommandPath -FeatureName user-authentication"
+        Log-Info "Example with JSON: $PSCommandPath -FeatureName list -Json"
         exit 1
+    }
+    
+    if ($Json) {
+        # Output JSON for the personas command
+        $personakitRoot = Get-PersonaKitRoot
+        if (-not $personakitRoot) {
+            Log-Error "Not in a Persona Kit project directory (no .personakit folder found)"
+            exit 1
+        }
+        
+        $sessionDir = Join-Path (Join-Path $personakitRoot "personas") $FeatureName
+        
+        # Create session directory if it doesn't exist
+        Ensure-Directory -Dir $sessionDir
+        
+        # Generate the file path for the persona perspective
+        $personaFile = Join-Path $sessionDir "personas-perspective.md"
+        
+        # Output JSON with BRANCH_NAME and PERSONA_FILE
+        $jsonOutput = @{
+            BRANCH_NAME = $FeatureName
+            PERSONA_FILE = $personaFile
+        } | ConvertTo-Json -Compress
+        
+        Write-Output $jsonOutput
+        exit 0
     }
     
     if (New-PersonaSession -FeatureName $FeatureName -Force $Force) {

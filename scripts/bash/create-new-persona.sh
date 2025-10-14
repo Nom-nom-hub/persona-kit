@@ -11,11 +11,33 @@ source "$SCRIPT_DIR/common.sh" || { echo "Failed to source common.sh"; exit 1; }
 
 create_persona_session() {
     local feature_name="${1:-}"
+    local json_mode="${2:-false}"
     
     if [ -z "$feature_name" ]; then
         log_error "Feature name is required"
-        log_info "Usage: $0 <feature-name>"
+        log_info "Usage: $0 <feature-name> [json_mode]"
         return 1
+    fi
+    
+    if [ "$json_mode" = "true" ]; then
+        # Output JSON for the personas command
+        local personakit_root
+        personakit_root=$(get_personakit_root) || {
+            log_error "Not in a Persona Kit project directory (no .personakit folder found)"
+            return 1
+        }
+        
+        local session_dir="$personakit_root/personas/$feature_name"
+        
+        # Create session directory if it doesn't exist
+        ensure_directory "$session_dir"
+        
+        # Generate the file path for the persona perspective
+        local persona_file="$session_dir/personas-perspective.md"
+        
+        # Output JSON with BRANCH_NAME and PERSONA_FILE
+        printf '{"BRANCH_NAME":"%s","PERSONA_FILE":"%s"}\n' "$feature_name" "$persona_file"
+        return 0
     fi
     
     local personakit_root
@@ -198,14 +220,32 @@ EOF
 }
 
 main() {
-    if [ $# -eq 0 ]; then
+    local feature_name=""
+    local json_mode="false"
+    
+    # Parse arguments
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --json)
+                json_mode="true"
+                shift
+                ;;
+            *)
+                feature_name="$1"
+                shift
+                ;;
+        esac
+    done
+    
+    if [ -z "$feature_name" ]; then
         log_error "Feature name is required"
-        log_info "Usage: $0 <feature-name>"
+        log_info "Usage: $0 <feature-name> [--json]"
         log_info "Example: $0 user-authentication"
+        log_info "Example with JSON: $0 user-authentication --json"
         exit 1
     fi
     
-    create_persona_session "$1"
+    create_persona_session "$feature_name" "$json_mode"
 }
 
 main "$@"
