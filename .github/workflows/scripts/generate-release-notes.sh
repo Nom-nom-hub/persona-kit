@@ -41,19 +41,19 @@ fi
 RELEASE_NOTES=""
 
 # Check if the new version exists in CHANGELOG.md
-if grep -q "^## \[${NEW_VERSION}\]" CHANGELOG.md; then
+if grep -q "^## \\[${NEW_VERSION}\\]" CHANGELOG.md; then
     echo "Found version ${NEW_VERSION} in CHANGELOG.md, extracting release notes..."
 
     # Try to find the version section in CHANGELOG.md
-    if [ -n "$PREVIOUS_VERSION" ] && grep -q "^## \[${PREVIOUS_VERSION}\]" CHANGELOG.md; then
+    if [ -n "$PREVIOUS_VERSION" ] && grep -q "^## \\[${PREVIOUS_VERSION}\\]" CHANGELOG.md; then
         # Extract content between current and previous version
-        awk "/^## \[${NEW_VERSION}\]/,/^## \[${PREVIOUS_VERSION}\]/" CHANGELOG.md | head -n -1
+        awk "/^## \\[${NEW_VERSION}\\]/,/^## \\[${PREVIOUS_VERSION}\\]/" CHANGELOG.md | head -n -1
     else
         # Extract content from current version to end of file
-        awk "/^## \[${NEW_VERSION}\]/{flag=1} flag{print} /^\s*$/ && flag{exit}" CHANGELOG.md
-    fi | grep -v "^## \[" | while IFS= read -r line; do
+        awk "/^## \\[${NEW_VERSION}\\]/{flag=1} flag{print} /^\\s*$/ && flag{exit}" CHANGELOG.md
+    fi | grep -v "^## \\[" | while IFS= read -r line; do
         if [ -n "$line" ]; then
-            RELEASE_NOTES="${RELEASE_NOTES}\n${line}"
+            RELEASE_NOTES="${RELEASE_NOTES}\\n${line}"
         fi
     done
 else
@@ -130,46 +130,8 @@ if [ -z "$RELEASE_NOTES" ]; then
 
 EOF
 
-    # Add commit history with error handling, filtering out format markers
-    if git log --oneline "$SINCE_TAG"..HEAD --pretty=format="%s" 2>/dev/null | sed 's/^/- /' | sed 's/^-\s*//' | sed 's/format=- //' | grep -v '^-
-
-    # Add contributors with error handling
-    CONTRIBUTORS=$(git log --format='%an' "$SINCE_TAG"..HEAD 2>/dev/null | sort -u | grep -v "dependabot" | paste -sd ', ' -)
-    if [ -n "$CONTRIBUTORS" ]; then
-        echo -e "\n### Contributors\n- $CONTRIBUTORS" >> release_notes.md
-    fi
-
-else
-    # Use extracted release notes
-    cat > release_notes.md << EOF
-## v${NEW_VERSION}${RELEASE_NOTES}
-
-### Repository
-- [View on GitHub]($(git config --get remote.origin.url | sed 's/\.git$//'))
-EOF
-
-    # Add comparison link if previous version exists and is a valid tag
-    if [ -n "$PREVIOUS_VERSION" ] && git tag --list | grep -q "^v${PREVIOUS_VERSION}$"; then
-        echo "- [Compare changes](https://github.com/$(git config --get remote.origin.url | sed 's/.*github.com[:\/]//; s/\.git$//')/compare/v${PREVIOUS_VERSION}...v${NEW_VERSION})" >> release_notes.md
-    fi
-EOF
-fi
-
-# Add the recommended release information at the beginning of the file
-TEMP_FILE=$(mktemp)
-echo "# Releases" > "$TEMP_FILE"
-echo "" >> "$TEMP_FILE"
-echo "This is the latest set of releases that you can use with your agent of choice. We recommend using the Persona Kit CLI to scaffold your projects, however you can download these independently and manage them yourself." >> "$TEMP_FILE"
-echo "" >> "$TEMP_FILE"
-cat release_notes.md >> "$TEMP_FILE"
-mv "$TEMP_FILE" release_notes.md
-
-# Display generated release notes
-echo "Generated release notes:"
-echo "=========================="
-cat release_notes.md
-
-echo "Release notes saved to: release_notes.md" >> release_notes.md 2>/dev/null; then
+    # Add commit history with error handling
+    if git log --oneline "$SINCE_TAG"..HEAD --pretty=format="%s" 2>/dev/null | sed 's/^/- /' | sed 's/format=- //' | sed 's/^-\s*//' | grep -v '^-$' >> release_notes.md 2>/dev/null; then
         echo "Successfully added commit history"
     else
         echo "Warning: Could not retrieve git history, adding placeholder"
@@ -179,7 +141,7 @@ echo "Release notes saved to: release_notes.md" >> release_notes.md 2>/dev/null;
     # Add contributors with error handling
     CONTRIBUTORS=$(git log --format='%an' "$SINCE_TAG"..HEAD 2>/dev/null | sort -u | grep -v "dependabot" | paste -sd ', ' -)
     if [ -n "$CONTRIBUTORS" ]; then
-        echo -e "\n### Contributors\n- $CONTRIBUTORS" >> release_notes.md
+        echo -e "\\n### Contributors\\n- $CONTRIBUTORS" >> release_notes.md
     fi
 
 else
@@ -188,12 +150,12 @@ else
 ## v${NEW_VERSION}${RELEASE_NOTES}
 
 ### Repository
-- [View on GitHub]($(git config --get remote.origin.url | sed 's/\.git$//'))
+- [View on GitHub]($(git config --get remote.origin.url | sed 's/\\.git$//'))
 EOF
 
     # Add comparison link if previous version exists and is a valid tag
     if [ -n "$PREVIOUS_VERSION" ] && git tag --list | grep -q "^v${PREVIOUS_VERSION}$"; then
-        echo "- [Compare changes](https://github.com/$(git config --get remote.origin.url | sed 's/.*github.com[:\/]//; s/\.git$//')/compare/v${PREVIOUS_VERSION}...v${NEW_VERSION})" >> release_notes.md
+        echo "- [Compare changes](https://github.com/$(git config --get remote.origin.url | sed 's/.*github.com[:\\/]//; s/\\.git$//')/compare/v${PREVIOUS_VERSION}...v${NEW_VERSION})" >> release_notes.md
     fi
 EOF
 fi
