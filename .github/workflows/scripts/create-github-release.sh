@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # create-github-release.sh - Create GitHub release with assets
-# Usage: ./create-github-release.sh <version> [release_notes]
+# Usage: ./create-github-release.sh <version> [release_notes] [options]
+# Options:
+#   --force-delete-tag    Delete existing tag without prompting (for CI/CD)
 
 set -euo pipefail
 
@@ -10,13 +12,39 @@ if [ "${DEBUG:-false}" = "true" ]; then
     set -x
 fi
 
-if [ $# -lt 1 ]; then
-    echo "Usage: $0 <version> [release_notes]"
+# Parse command line arguments
+FORCE_DELETE_TAG=false
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --force-delete-tag)
+            FORCE_DELETE_TAG=true
+            shift
+            ;;
+        -*)
+            echo "Unknown option: $1"
+            echo "Usage: $0 <version> [release_notes] [--force-delete-tag]"
+            exit 1
+            ;;
+        *)
+            if [ -z "${VERSION:-}" ]; then
+                VERSION=$1
+            elif [ -z "${RELEASE_NOTES_FILE:-}" ]; then
+                RELEASE_NOTES_FILE=$1
+            else
+                echo "Too many arguments"
+                echo "Usage: $0 <version> [release_notes] [--force-delete-tag]"
+                exit 1
+            fi
+            shift
+            ;;
+    esac
+done
+
+if [ -z "$VERSION" ]; then
+    echo "Usage: $0 <version> [release_notes] [--force-delete-tag]"
     exit 1
 fi
-
-VERSION=$1
-RELEASE_NOTES_FILE=${2:-}
 
 # Validation functions
 validate_version() {
@@ -59,6 +87,106 @@ validate_tag_name() {
     return 0
 }
 
+check_git_tag_exists_locally() {
+    local tag_name=$1
+    if git tag -l | grep -q "^${tag_name}$"; then
+        return 0  # Tag exists locally
+    else
+        return 1  # Tag does not exist locally
+    fi
+}
+
+check_git_tag_exists_remotely() {
+    local tag_name=$1
+    if git ls-remote --tags origin | grep -q "refs/tags/${tag_name}$"; then
+        return 0  # Tag exists remotely
+    else
+        return 1  # Tag does not exist remotely
+    fi
+}
+
+delete_git_tag() {
+    local tag_name=$1
+    local force=${2:-false}
+
+    echo "Deleting git tag: ${tag_name}"
+
+    # Delete locally
+    if [ "$force" = "true" ]; then
+        git tag -d "$tag_name" 2>/dev/null || true
+    else
+        git tag -d "$tag_name"
+    fi
+
+    # Delete remotely
+    if [ "$force" = "true" ]; then
+        git push --delete origin "$tag_name" 2>/dev/null || true
+    else
+        git push --delete origin "$tag_name"
+    fi
+}
+
+handle_tag_conflict() {
+    local tag_name=$1
+
+    echo ""
+    echo "🔍 TAG CONFLICT DETECTED"
+    echo "══════════════════════════════════════════════════"
+    echo "The git tag '${tag_name}' exists but no GitHub release was found."
+    echo ""
+    echo "This can happen when:"
+    echo "  • A previous release attempt failed after creating the tag"
+    echo "  • The tag was created manually without a release"
+    echo "  • There was a race condition during release creation"
+    echo ""
+    echo "Available options:"
+    echo "  1. Delete the existing tag and recreate it"
+    echo "  2. Use a different version number"
+    echo "  3. Manually create the release for the existing tag"
+    echo ""
+
+    # Check if force delete is enabled
+    if [ "$FORCE_DELETE_TAG" = "true" ]; then
+        echo "🔧 FORCE DELETE ENABLED: Automatically deleting existing tag..."
+        delete_git_tag "$tag_name"
+        return 0
+    fi
+
+    # Check if running in interactive mode
+    if [ -t 0 ]; then
+        echo "Would you like to delete the existing tag and continue? (y/N)"
+
+        read -r response
+        case "$response" in
+            [yY]|[yY][eE][sS])
+                echo "Deleting tag '${tag_name}'..."
+                delete_git_tag "$tag_name"
+                return 0
+                ;;
+            *)
+                echo "Tag not deleted. Please resolve the conflict manually."
+                echo ""
+                echo "To resolve manually:"
+                echo "  1. Delete the tag: git tag -d ${tag_name}"
+                echo "  2. Delete remote tag: git push --delete origin ${tag_name}"
+                echo "  3. Run this script again"
+                return 1
+                ;;
+        esac
+    else
+        echo "Running in non-interactive mode. Tag conflict must be resolved manually."
+        echo ""
+        echo "To resolve manually:"
+        echo "  1. Delete the tag: git tag -d ${tag_name}"
+        echo "  2. Delete remote tag: git push --delete origin ${tag_name}"
+        echo "  3. Run this script again"
+        echo ""
+        echo "Alternatively, use --force-delete-tag to automatically delete the tag:"
+        echo "  $0 ${VERSION} ${RELEASE_NOTES_FILE:-} --force-delete-tag"
+        return 1
+    fi
+}
+
 debug_log() {
     if [ "${DEBUG:-false}" = "true" ]; then
         echo "[DEBUG] $*" >&2
@@ -89,6 +217,24 @@ fi
 
 debug_log "Version: $VERSION"
 debug_log "Tag name: $TAG_NAME"
+
+# Check if git tag already exists (locally and remotely)
+echo "Checking if git tag ${TAG_NAME} already exists..."
+
+# Check locally first
+if check_git_tag_exists_locally "$TAG_NAME"; then
+    echo "✓ Git tag '${TAG_NAME}' exists locally"
+
+    # Check remotely
+    if check_git_tag_exists_remotely "$TAG_NAME"; then
+        echo "✓ Git tag '${TAG_NAME}' exists remotely"
+    else
+        echo "⚠ Git tag '${TAG_NAME}' exists locally but not remotely"
+        echo "  This may indicate a sync issue between local and remote repositories"
+    fi
+else
+    echo "✓ Git tag '${TAG_NAME}' does not exist locally"
+fi
 
 # Check if release already exists
 echo "Checking if release ${TAG_NAME} already exists..."
@@ -178,11 +324,6 @@ case $http_code in
         ;;
     422)
         echo "Error: Unprocessable Entity (HTTP 422)"
-        echo "This usually means:"
-        echo "  - Invalid tag name format (must match: ^v?[0-9]+\\.[0-9]+\\.[0-9]+(?:-.*)?$)"
-        echo "  - Tag already exists but not found in check (race condition)"
-        echo "  - Missing required fields in JSON payload"
-        echo "  - Invalid JSON structure"
         echo ""
         echo "Debug information:"
         echo "  Tag name: ${TAG_NAME}"
@@ -191,9 +332,40 @@ case $http_code in
         echo ""
         echo "Full API response: ${body}"
 
+        # Check if this is a tag conflict issue
+        if echo "$body" | jq -e '.message // .errors' >/dev/null 2>&1; then
+            error_message=$(echo "$body" | jq -r '.message // "Unknown error"' 2>/dev/null)
+            if echo "$error_message" | grep -qi "tag.*already exists" || echo "$body" | jq -e '.errors[]? | select(.code == "already_exists")' >/dev/null 2>&1; then
+                echo ""
+                echo "🔍 DIAGNOSIS: Git tag '${TAG_NAME}' exists but no GitHub release found"
+                echo ""
+                echo "This commonly occurs when:"
+                echo "  • A previous release attempt failed after creating the tag"
+                echo "  • The tag was created manually without creating a release"
+                echo "  • There was a race condition during release creation"
+                echo ""
+                echo "🔧 AUTOMATIC RESOLUTION:"
+                if handle_tag_conflict "$TAG_NAME"; then
+                    echo ""
+                    echo "✅ Tag conflict resolved. Please run this script again to create the release."
+                    exit 0
+                else
+                    echo ""
+                    echo "❌ Could not resolve tag conflict automatically."
+                    exit 1
+                fi
+            fi
+        fi
+
+        echo ""
+        echo "This error can also mean:"
+        echo "  - Invalid tag name format (must match: ^v?[0-9]+\\.[0-9]+\\.[0-9]+(?:-.*)?$)"
+        echo "  - Missing required fields in JSON payload"
+        echo "  - Invalid JSON structure"
+        echo ""
+
         # Try to extract specific error details from GitHub's response
         if echo "$body" | jq -e '.errors' >/dev/null 2>&1; then
-            echo ""
             echo "Specific errors from GitHub API:"
             echo "$body" | jq -r '.errors[]? | "- \(.field // "unknown"): \(.message // .code)' 2>/dev/null || echo "  Could not parse error details"
         fi
