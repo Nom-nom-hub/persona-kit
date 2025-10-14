@@ -46,11 +46,13 @@ jobs:
 
       - name: Create basic mkdocs.yml if it doesn't exist
         run: |
-          if [ ! -f docs/mkdocs.yml ]; then
-            cat > docs/mkdocs.yml << 'EOF'
+          if [ ! -f mkdocs.yml ]; then
+            cat > mkdocs.yml << 'EOF'
           site_name: Persona Kit Documentation
           site_description: A toolkit for persona-driven development workflows and AI agent management
           site_url: https://nom-nom-hub.github.io/persona-kit/
+
+          docs_dir: docs
 
           theme:
             name: material
@@ -103,7 +105,6 @@ jobs:
 
       - name: Build with MkDocs
         run: |
-          cd docs
           mkdocs build
 
       - name: Setup Pages
@@ -112,7 +113,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'docs/site'
+          path: 'site'
 
   # Deploy job
   deploy:
