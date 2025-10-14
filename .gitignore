@@ -1,0 +1,140 @@
+# Dependencies
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+/.cursor/
+/.claude/
+/.gemini/
+/.qwen/
+/.opencode/
+/.codex/
+/.cursor/
+/.windsurf/
+/.kilocode/
+/.augment/
+/.codebuddy/
+/.roo/
+/.amazonq/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+.logs
+
+# Environment variables
+.env
+.env.local
+.env.dev
+.env.prod
+
+# Coverage
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage*
+*.coveragexml
+.coverage.xml
+.pytest_cache/
+.hypothesis/
+
+# mypy
+.mypy_cache/
+
+# pytype
+.pytype/
+
+# Documentation
+docs/_build/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Local configuration
+.local/
+
+# Persona Kit specific
+.personakit/config.json
+.personakit/memory/credentials*
+.personakit/memory/tokens*
+personas/*/credentials*
+personas/*/tokens*
+
+# Python specific
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+venv.bak/
+ENV/
+
+# Distribution / packaging
+.pybuild/
+.tox/
+.coverage
+.coverage.xml
+htmlcov/
+.landscape.yaml
+.pyup.yml
+.isort.cfg
+noxfile.py
+
+# Testing
+.tests/
+test-output/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# CI
+.github/
+.mypy_cache/

@@ -9,10 +9,10 @@
 </p>
 
 <p align="center">
-    <a href="https://github.com/github/persona-kit/actions/workflows/release.yml"><img src="https://github.com/github/persona-kit/actions/workflows/release.yml/badge.svg" alt="Release"/></a>
-    <a href="https://github.com/github/persona-kit/stargazers"><img src="https://img.shields.io/github/stars/github/persona-kit?style=social" alt="GitHub stars"/></a>
-    <a href="https://github.com/github/persona-kit/blob/main/LICENSE"><img src="https://img.shields.io/github/license/github/persona-kit" alt="License"/></a>
-    <a href="https://github.github.io/persona-kit/"><img src="https://img.shields.io/badge/docs-GitHub_Pages-blue" alt="Documentation"/></a>
+    <a href="https://github.com/Nom-nom-hub/persona-kit/actions/workflows/release.yml"><img src="https://github.com/Nom-nom-hub/persona-kit/actions/workflows/release.yml/badge.svg" alt="Release"/></a>
+    <a href="https://github.com/Nom-nom-hub/persona-kit/stargazers"><img src="https://img.shields.io/github/stars/Nom-nom-hub/persona-kit?style=social" alt="GitHub stars"/></a>
+    <a href="https://github.com/Nom-nom-hub/persona-kit/blob/main/LICENSE"><img src="https://img.shields.io/github/license/Nom-nom-hub/persona-kit" alt="License"/></a>
+    <a href="https://nom-nom-hub.github.io/persona-kit/"><img src="https://img.shields.io/badge/docs-GitHub_Pages-blue" alt="Documentation"/></a>
 </p>
 
 ---
@@ -53,7 +53,7 @@ Choose your preferred installation method:
 Install once and use everywhere:
 
 ```bash
-uv tool install personakit-cli --from git+https://github.com/github/persona-kit.git
+uv tool install personakit-cli --from git+https://github.com/Nom-nom-hub/persona-kit.git
 ```
 
 Then use the tool directly:
@@ -66,7 +66,7 @@ personakit check
 To upgrade personakit run:
 
 ```bash
-uv tool install personakit-cli --force --from git+https://github.com/github/persona-kit.git
+uv tool install personakit-cli --force --from git+https://github.com/Nom-nom-hub/persona-kit.git
 ```
 
 #### Option 2: One-time Usage
@@ -74,7 +74,7 @@ uv tool install personakit-cli --force --from git+https://github.com/github/pers
 Run directly without installing:
 
 ```bash
-uvx --from git+https://github.com/github/persona-kit.git personakit init <PROJECT_NAME>
+uvx --from git+https://github.com/Nom-nom-hub/persona-kit.git personakit init <PROJECT_NAME>
 ```
 
 **Benefits of persistent installation:**
@@ -433,9 +433,7 @@ rm gcm-linux_amd64.2.6.1.deb
 
 ## 👥 Maintainers
 
-- Den Delimarsky ([@localden](https://github.com/localden))
-- John Lam ([@jflam](https://github.com/jflam))
-- Kaiden ([@kaiden](https://github.com/kaiden)) - Creator of Persona Kit concept
+- Kaiden ([@Nom-nom-hub](https://github.com/Nom-nom-hub)) - Creator and maintainer of Persona Kit
 
 ## 💬 Support
 
@@ -443,7 +441,7 @@ For support, please open a [GitHub issue](https://github.com/github/persona-kit/
 
 ## 🙏 Acknowledgements
 
-This project is heavily influenced by and based on the work and research of [John Lam](https://github.com/jflam). It also builds on the ideas from the [Spec Kit](https://github.com/github/spec-kit) project.
+This project is inspired by methodologies like Spec-Driven Development and aims to provide similar benefits through persona-driven approaches.
 
 ## 📄 License
 

@@ -152,12 +152,14 @@ SCRIPT_TYPE_CHOICES = {"sh": "POSIX Shell (bash/zsh)", "ps": "PowerShell"}
 CLAUDE_LOCAL_PATH = Path.home() / ".claude" / "local" / "claude"
 
 BANNER = """
-███████╗██╗   ██╗ ██████╗ ██████╗ ████████╗    ███████╗███████╗██████╗ ██╗   ██╗███████╗██████╗ 
-██╔════╝██║   ██║██╔════╝██╔═══██╗╚══██╔══╝    ██╔════╝██╔════╝██╔══██╗██║   ██║██╔════╝██╔══██╗
-███████╗██║   ██║██║     ██║   ██║   ██║       ███████╗█████╗  ██████╔╝██║   ██║█████╗  ██████╔╝
-╚════██║██║   ██║██║     ██║   ██║   ██║       ╚════██║██╔══╝  ██╔══██╗╚██╗ ██╔╝██╔══╝  ██╔══██╗
-███████║╚██████╔╝╚██████╗╚██████╔╝   ██║       ███████║███████╗██║  ██║ ╚████╔╝ ███████╗██║  ██║
-╚══════╝ ╚═════╝  ╚═════╝ ╚═════╝    ╚═╝       ╚══════╝╚══════╝╚═╝  ╚═╝  ╚═══╝  ╚══════╝╚═╝  ╚═╝
+ ________  _______   ________  ________  ________  ________   ________          ___  __    ___  _________   
+|\   __  \|\  ___ \ |\   __  \|\   ____\|\   __  \|\   ___  \|\   __  \        |\  \|\  \ |\  \|\___   ___\ 
+\ \  \|\  \ \   __/|\ \  \|\  \ \  \___|\ \  \|\  \ \  \\ \  \ \  \|\  \       \ \  \/  /|\ \  \|___ \  \_| 
+ \ \   ____\ \  \_|/_\ \   _  _\ \_____  \ \  \\\  \ \  \\ \  \ \   __  \       \ \   ___  \ \  \   \ \  \  
+  \ \  \___|\ \  \_|\ \ \  \\  \\|____|\  \ \  \\\  \ \  \\ \  \ \  \ \  \       \ \  \\ \  \ \  \   \ \  \ 
+   \ \__\    \ \_______\ \__\\ _\ ____\_\  \ \_______\ \__\\ \__\ \__\ \__\       \ \__\\ \__\ \__\   \ \__\
+    \|__|     \|_______|\|__|\|__|\_________\|_______|\|__| \|__|\|__|\|__|        \|__| \|__|\|__|    \|__|
+                                 \|_________|                                                               
 """
 
 TAGLINE = "Persona Kit - AI-Powered Development Personas Toolkit"
@@ -487,7 +489,7 @@ def init_git_repo(project_path: Path, quiet: bool = False) -> Tuple[bool, Option
         os.chdir(original_cwd)
 
 def download_template_from_github(ai_assistant: str, download_dir: Path, *, script_type: str = "sh", verbose: bool = True, show_progress: bool = True, client: httpx.Client = None, debug: bool = False, github_token: str = None) -> Tuple[Path, dict]:
-    repo_owner = "github"
+    repo_owner = "Nom-nom-hub"
     repo_name = "persona-kit"
     if client is None:
         client = httpx.Client(verify=ssl_context)
