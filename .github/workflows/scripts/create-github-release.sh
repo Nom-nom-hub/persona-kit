@@ -201,6 +201,19 @@ if [ -z "$REPO_URL" ]; then
     exit 1
 fi
 
+# Extract owner and repo name for API calls
+if [[ $REPO_URL == https://github.com/* ]]; then
+    OWNER_REPO=$(echo "$REPO_URL" | sed 's|.*github.com/||' | sed 's|\.git$||')
+elif [[ $REPO_URL == git@github.com:* ]]; then
+    OWNER_REPO=$(echo "$REPO_URL" | sed 's|git@github.com:||; s|\.git$||')
+else
+    echo "Error: Unsupported repository URL format: $REPO_URL"
+    exit 1
+fi
+
+# Construct the GitHub API base URL
+API_BASE_URL="https://api.github.com/repos/$OWNER_REPO"
+
 echo "Creating GitHub release for version: ${VERSION}"
 echo "Repository: ${REPO_URL}"
 
@@ -238,7 +251,7 @@ fi
 
 # Check if release already exists
 echo "Checking if release ${TAG_NAME} already exists..."
-CHECK_API_URL="${REPO_URL}/releases/tags/${TAG_NAME}"
+CHECK_API_URL="${API_BASE_URL}/releases/tags/${TAG_NAME}"
 
 if [ -n "${GITHUB_TOKEN:-}" ]; then
     check_response=$(curl -s -w "%{http_code}" -o /tmp/release_check.json \
@@ -305,7 +318,7 @@ debug_log "JSON payload being sent to GitHub API:"
 debug_log "$RELEASE_DATA"
 
 # Create the release using GitHub API
-API_URL="${REPO_URL}/releases"
+API_URL="${API_BASE_URL}/releases"
 
 response=$(curl -s -w "\n%{http_code}" \
     -H "Authorization: token ${GITHUB_TOKEN}" \
