@@ -5,7 +5,7 @@
 </div>
 
 <p align="center">
-    <strong>Persona Kit provides AI-powered personas mimicking a full-scale development company, enabling individuals and small teams to access specialized expertise from various roles including CEO, Engineering Manager, Architect, Developer, QA, Security, and DevOps.</strong>
+    <strong>Persona Kit provides AI-powered personas mimicking a full-scale development company, enabling individuals and small teams to access specialized expertise from various roles including CEO, Engineering Manager, Architect, Developer, QA, Security, and DevOps. Personas collaborate automatically to provide comprehensive guidance on projects and decisions.</strong>
 </p>
 
 <p align="center">
@@ -38,9 +38,9 @@
 
 ## 🤔 What is Persona Kit?
 
-Persona Kit **democratizes access to specialized development expertise** by providing AI-powered personas that simulate various roles in a large development company. Whether you need strategic guidance from a CEO persona, technical architecture advice from an Architect persona, or implementation details from a Developer persona, Persona Kit offers the perspectives of a complete development team.
+Persona Kit **democratizes access to specialized development expertise** by providing AI-powered personas that simulate various roles in a large development company. Rather than providing isolated perspectives, the personas automatically collaborate, combining strategic guidance from the CEO, technical architecture advice from the Architect, implementation details from the Developer, and insights from other roles to provide comprehensive, multi-faceted guidance.
 
-This approach allows individuals and small teams to make better decisions by considering multiple viewpoints typically found only in large organizations.
+This collaborative approach allows individuals and small teams to make better decisions by leveraging the collective expertise typically found only in large organizations.
 
 ## ⚡ Get started
 
@@ -106,12 +106,18 @@ Use persona commands to get specialized insights:
 
 ### 4. Get multi-perspective insights
 
-Combine insights from multiple personas:
+Combine insights from multiple personas or simulate team collaboration:
 
 ```bash
 /personakit.multi-perspective Analyze our proposed database schema from development, QA, and security perspectives
 /personakit.role-play Simulate a team meeting to discuss the technical approach for our new feature
+/personakit.company-team Address complex projects with coordinated input from all relevant personas
+/personakit.auto-route Automatically route to the most appropriate persona(s) for your query
+/personakit.advanced-auto-route Advanced intelligent routing with comprehensive multi-persona coordination
+/personakit.orchestrator Full team orchestration - automatically engages all relevant personas for comprehensive input
 ```
+
+For complex decisions, consider using the collaborative approaches by default rather than single-persona consultation. The automated routing and orchestration commands ensure all relevant perspectives are considered automatically.
 
 For detailed step-by-step instructions, see our [comprehensive guide](./persona-driven.md).
 
@@ -242,6 +248,10 @@ Additional commands for enhanced multi-perspective development:
 | `/personakit.multi-perspective` | Combine insights from multiple personas on a single topic     |
 | `/personakit.role-play` | Simulate a team meeting with different personas providing input       |
 | `/personakit.guidance-check` | Validate decisions against multiple persona viewpoints         |
+| `/personakit.company-team` | Engage multiple personas in coordinated manner like a real company team |
+| `/personakit.auto-route` | Automatically route to the most appropriate persona(s) for your query |
+| `/personakit.advanced-auto-route` | Advanced intelligent routing with comprehensive multi-persona coordination |
+| `/personakit.orchestrator` | Full team orchestration - engages all relevant personas automatically |
 
 #### Persona-Driven Development Workflow Commands
 

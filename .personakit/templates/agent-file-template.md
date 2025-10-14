@@ -63,12 +63,28 @@ Essential commands for accessing different development perspectives:
 |--------------------------|-----------------------------------------------------------------------|
 | `/personakit.personas`   | List all available personas and their expertise areas                 |
 | `/personakit.ceo`        | Access the CEO persona for strategic business guidance                |
+| `/personakit.cfo`        | Get financial guidance, budget planning, and ROI analysis             |
+| `/personakit.cto`        | Consult with the CTO persona for technology strategy and innovation   |
+| `/personakit.chief-design-officer` | Access design strategy and user experience vision           |
+| `/personakit.chief-of-staff` | Get organizational alignment and coordination guidance            |
 | `/personakit.engineering-manager` | Get insights from an engineering manager perspective         |
+| `/personakit.product-manager` | Access product management guidance for user requirements and success metrics |
 | `/personakit.architect`  | Consult with a software architect persona for design decisions        |
 | `/personakit.developer`  | Get hands-on development guidance from a senior developer persona     |
 | `/personakit.qa`         | Access QA engineer perspective for testing strategy and quality       |
 | `/personakit.security`   | Get security best practices and vulnerability considerations          |
 | `/personakit.devops`     | Access DevOps perspective for deployment and infrastructure guidance  |
+| `/personakit.customer-success-manager` | Get guidance on user adoption and satisfaction                |
+| `/personakit.data-scientist` | Access data-driven insights and analytics guidance                 |
+| `/personakit.hr-director` | Get guidance on people impact and organizational change             |
+| `/personakit.it-security-manager` | Access cybersecurity and risk management expertise              |
+| `/personakit.legal-counsel` | Get legal compliance and risk guidance                            |
+| `/personakit.marketing-manager` | Access market positioning and customer acquisition advice       |
+| `/personakit.operations-manager` | Get process optimization and operational efficiency guidance   |
+| `/personakit.sales-manager` | Get customer acquisition and revenue impact guidance              |
+| `/personakit.finance-manager` | Access budget and cost management guidance                      |
+| `/personakit.procurement-manager` | Get vendor and supplier consideration guidance                |
+| `/personakit.pr-manager` | Access brand reputation and stakeholder communication advice        |
 
 ### Advanced Persona Commands
 
@@ -79,7 +95,17 @@ Additional commands for enhanced multi-perspective development:
 | `/personakit.multi-perspective` | Combine insights from multiple personas on a single topic     |
 | `/personakit.role-play`  | Simulate a team meeting with different personas providing input       |
 | `/personakit.guidance-check` | Validate decisions against multiple persona viewpoints         |
-| `/personakit.persona-analyze` | Analyze code/design from multiple persona perspectives         |
+| `/personakit.company-team` | Engage multiple personas in coordinated manner like a real company team |
+| `/personakit.auto-route` | Automatically route to the most appropriate persona(s) for your query |
+| `/personakit.advanced-auto-route` | Advanced intelligent routing with comprehensive multi-persona coordination |
+| `/personakit.orchestrator` | Full team orchestration - engages all relevant personas automatically |
+| `/personakit.analyze` | Cross-artifact consistency and coverage analysis                    |
+| `/personakit.specify` | Create or update feature specification from natural language        |
+| `/personakit.plan` | Create implementation plan with technology choices and architecture  |
+| `/personakit.clarify` | Clarify underspecified areas before planning                        |
+| `/personakit.tasks` | Generate actionable development tasks from the implementation plan   |
+| `/personakit.checklist` | Generate custom quality checklists for validation                 |
+| `/personakit.implement` | Execute development tasks to build the feature according to plan and spec |
 
 ## Usage Examples
 
@@ -121,11 +147,13 @@ Get testing strategy:
 
 ## Best Practices
 
-1. **Use Multiple Perspectives**: Before making major architectural decisions, consult multiple personas to understand various implications
-2. **Sequential Consultation**: For complex features, follow the sequence: CEO → Architect → Engineering Manager → Developer → QA → Security → DevOps
-3. **Documentation**: Document persona recommendations in the `personas/` directory for future reference
-4. **Validation**: Use `/personakit.guidance-check` to validate decisions against multiple personas
-5. **Team Simulation**: Use `/personakit.role-play` to simulate team discussions before implementing controversial changes
+1. **Default to Collaboration**: For complex decisions, automatically engage multiple personas using `/personakit.company-team` or `/personakit.multi-perspective` rather than single-persona consultation
+2. **Use Multiple Perspectives**: Before making major architectural decisions, consult multiple personas to understand various implications
+3. **Sequential Consultation**: For complex features, follow the sequence: CEO → Architect → Engineering Manager → Developer → QA → Security → DevOps
+4. **Intelligent Routing**: Use `/personakit.auto-route` for automatic routing to the most appropriate persona(s) for your query
+5. **Documentation**: Document persona recommendations in the `personas/` directory for future reference
+6. **Validation**: Use `/personakit.guidance-check` to validate decisions against multiple personas
+7. **Team Simulation**: Use `/personakit.role-play` to simulate team discussions before implementing controversial changes
 
 ## Troubleshooting
 

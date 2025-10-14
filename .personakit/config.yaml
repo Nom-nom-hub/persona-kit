@@ -1,0 +1,68 @@
+# Persona Kit Configuration
+
+This configuration file defines default behaviors and settings for the Persona Kit system.
+
+## Collaboration Settings
+
+# Default to collaborative approaches for complex queries
+# When enabled, complex queries will automatically engage multiple personas
+use_collaboration_by_default: true
+
+# Minimum complexity threshold to trigger multi-persona collaboration
+# 1 = always use collaboration, 10 = only use collaboration for very complex queries
+collaboration_threshold: 3
+
+# Default persona sequence for complex projects
+# Used when /personakit.company-team is triggered
+default_persona_sequence:
+  - ceo
+  - architect
+  - engineering-manager
+  - developer
+  - qa
+  - security
+  - devops
+
+# Personas to always include for specific types of queries
+security_critical_personas:
+  - security
+  - legal-counsel
+  - it-security-manager
+
+quality_critical_personas:
+  - qa
+  - devops
+  - developer
+
+business_critical_personas:
+  - ceo
+  - product-manager
+  - marketing-manager
+
+## Auto-Route Settings
+
+# Enable automatic routing to appropriate persona(s) based on query analysis
+enable_auto_routing: true
+
+# Default routing rules
+routing_rules:
+  business: ["ceo", "product-manager"]
+  technical: ["architect", "developer"]
+  security: ["security", "legal-counsel"]
+  quality: ["qa", "devops"]
+  operational: ["devops", "operations-manager"]
+  complex: ["company-team"]
+
+## Command Defaults
+
+# Default command for general queries
+default_command: "/personakit.auto-route"
+
+# Command to use for complex project queries
+complex_project_command: "/personakit.orchestrator"
+
+# Command to use for technical queries
+technical_command: "/personakit.multi-perspective"
+
+# Command to use when maximum collaboration is needed
+full_collaboration_command: "/personakit.orchestrator"
