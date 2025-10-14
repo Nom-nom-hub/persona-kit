@@ -192,6 +192,7 @@ This sequence ensures you consider all important aspects before implementation b
 - `/personakit.multi-perspective` - Get input from multiple personas on a single topic
 - `/personakit.role-play` - Simulate a team meeting with different personas
 - `/personakit.guidance-check` - Validate decisions against multiple persona viewpoints
+- `/personakit.company-team` - Automatically engage multiple personas to work on a project like a real company team
 
 ## General Guidelines
 
