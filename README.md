@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="./media/logo_small.webp"/>
+    <img src="./media/persona.png"/>
     <h1>👥 Persona Kit</h1>
     <h3><em>Access the expertise of a full development company through AI personas.</em></h3>
 </div>
