@@ -79,14 +79,21 @@ if [ -z "$RELEASE_NOTES" ]; then
                     echo "Found previous version tag ${STRIPPED_PREV}, using it as reference"
                     SINCE_TAG="${STRIPPED_PREV}"
                 else
+                    # Check if both 'vX.Y.Z' and 'X.Y.Z' format tags exist for warning
+                    STRIPPED_PREV="${PREVIOUS_VERSION#v}"
+                    if git tag --list | grep -q "^${STRIPPED_PREV}$" && git tag --list | grep -q "^v${STRIPPED_PREV}$"; then
+                        echo "WARNING: Both formats of tag exist: '${STRIPPED_PREV}' and 'v${STRIPPED_PREV}', using unambiguous detection method"
+                    fi
                     echo "Previous version tag ${PREVIOUS_VERSION} not found, looking for latest tag"
                     LATEST_TAG=$(git tag --sort=-version:refname | head -n 1)
                     if [ -n "$LATEST_TAG" ]; then
                         echo "Using latest tag: $LATEST_TAG"
                         SINCE_TAG="$LATEST_TAG"
                     else
-                        echo "No tags found, using last 10 commits"
-                        SINCE_TAG="HEAD~10"
+                        FALLBACK_COMMIT_RANGE="${FALLBACK_COMMIT_RANGE:-HEAD~10}"
+                        echo "No tags found, using fallback commit range: ${FALLBACK_COMMIT_RANGE}"
+                        echo "WARNING: Fallback range may miss changes in repositories with infrequent tags or large merges. Consider setting FALLBACK_COMMIT_RANGE to adjust."
+                        SINCE_TAG="${FALLBACK_COMMIT_RANGE}"
                     fi
                 fi
             fi
