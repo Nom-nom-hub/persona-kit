@@ -169,4 +169,4 @@ When reporting issues, please include:
 
 Thank you for using Persona Kit! We're committed to your success and look forward to helping you build amazing software with persona-driven development.
 
-*Last updated: January 2024*
+*Last updated: October 2025*

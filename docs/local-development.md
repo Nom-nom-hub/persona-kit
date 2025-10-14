@@ -213,7 +213,7 @@ Persona Kit integrates with multiple AI agents:
 ```bash
 # Configure Claude integration
 persona-kit config set agent.claude.api-key "your-api-key"
-persona-kit config set agent.claude.model "claude-3-sonnet-20240229"
+persona-kit config set agent.claude.model "claude-3-sonnet-20250229"
 
 # Test integration
 persona-kit agent test claude

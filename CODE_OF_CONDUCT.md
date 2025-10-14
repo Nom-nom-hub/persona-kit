@@ -117,4 +117,4 @@ This Code of Conduct is licensed under a [Creative Commons Attribution 4.0 Inter
 
 ---
 
-*Last updated: January 2024*
+*Last updated: October 2025*

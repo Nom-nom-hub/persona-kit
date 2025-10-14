@@ -202,6 +202,6 @@ This security policy may be updated periodically. Changes will be communicated t
 
 ---
 
-*Last updated: January 2024*
+*Last updated: October 2025*
 
 *This security policy is inspired by industry best practices and standards.*
