@@ -203,9 +203,9 @@ fi
 
 # Extract owner and repo name for API calls
 if [[ $REPO_URL == https://github.com/* ]]; then
-    OWNER_REPO=$(echo "$REPO_URL" | sed 's|https://github.com/||')
+    OWNER_REPO=$(echo "$REPO_URL" | sed 's|.*github.com/||' | sed 's|\.git$||')
 elif [[ $REPO_URL == git@github.com:* ]]; then
-    OWNER_REPO=$(echo "$REPO_URL" | sed 's|git@github.com:||' | sed 's|\.git$||')
+    OWNER_REPO=$(echo "$REPO_URL" | sed 's|git@github.com:||; s|\.git$||')
 else
     echo "Error: Unsupported repository URL format: $REPO_URL"
     exit 1
