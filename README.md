@@ -132,21 +132,20 @@ personakit workflow create "feature-development" --template feature
 
 ```
 persona-kit/
-├── .persona-kit/           # Core system directory
-│   ├── memory/            # Shared knowledge and context
-│   ├── personas/          # Persona definitions and configurations
-│   ├── patterns/          # Interaction patterns and behaviors
-│   ├── workflows/         # Defined workflow templates
-│   ├── templates/         # Reusable templates
-│   └── scripts/           # Automation scripts
-├── src/                   # Source code
-│   └── persona_kit/       # Main package
+├── .github/               # GitHub workflows and scripts
 ├── docs/                  # Documentation
-├── media/                 # Images and assets
+├── memory/                # Memory system templates
+├── patterns/              # Pattern definitions
+├── personas/              # Persona definitions
+├── scripts/               # Automation scripts (bash/powershell)
+├── src/                   # Source code (persona_kit_cli)
+├── templates/             # Base templates
+├── workflows/             # Workflow definitions
 ├── pyproject.toml         # Project configuration
 ├── README.md             # This file
 ├── LICENSE               # License file
-└── .gitignore           # Git ignore patterns
+├── .gitignore           # Git ignore patterns
+└── [other project files]
 ```
 
 ## 🔧 Configuration
