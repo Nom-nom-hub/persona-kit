@@ -1,297 +1,358 @@
-# --- PERSONA KIT POWERSHELL SCRIPTS COMMON FUNCTIONS ---
-# This file contains common utility functions for Persona Kit PowerShell scripts
-# All other PowerShell scripts in the Persona Kit system dot-source this file
+# Common functions and variables for persona-kit PowerShell scripts
 
-# Enable strict mode
-Set-StrictMode -Version Latest
-
-# --- DEFAULT VALUES ---
-# Default values for configuration, may be overridden by environment variables
-if (-not (Test-Path variable:global:PERSONAKIT_DEBUG)) { $global:PERSONAKIT_DEBUG = 0 }
-if (-not (Test-Path variable:global:PERSONAKIT_FEATURE)) { $global:PERSONAKIT_FEATURE = "" }
-
-# --- LOGGING FUNCTIONS ---
-function Log-Debug {
-    param([string]$Message)
-    if ($global:PERSONAKIT_DEBUG -ge 1) {
-        Write-Host "[DEBUG] $Message" -ForegroundColor Gray
-    }
-}
-
-function Log-Info {
-    param([string]$Message)
-    Write-Host "[INFO] $Message" -ForegroundColor Cyan
-}
-
-function Log-Warn {
-    param([string]$Message)
-    Write-Host "[WARN] $Message" -ForegroundColor Yellow
-}
-
-function Log-Error {
-    param([string]$Message)
-    Write-Host "[ERROR] $Message" -ForegroundColor Red
-}
-
-# --- VALIDATION FUNCTIONS ---
-function Test-GitRepo {
+# Get repository root, with fallback for non-git repositories
+function Get-RepoRoot {
     try {
-        $null = git rev-parse --git-dir 2>$null
-        return $LASTEXITCODE -eq 0
-    } catch {
-        return $false
+        # Try git first
+        $gitRoot = git rev-parse --show-toplevel 2>$null
+        if ($LASTEXITCODE -eq 0) {
+            return $gitRoot
+        }
     }
+    catch {
+        # Git not available or not in git repo
+    }
+
+    # Fall back to script location for non-git repos
+    $scriptDir = Split-Path -Parent $PSCommandPath
+    $repoRoot = Split-Path -Parent (Split-Path -Parent $scriptDir)
+    return $repoRoot
 }
 
-function Get-GitRoot {
+# Get current branch, with fallback for non-git repositories
+function Get-CurrentBranch {
+    # First check if PERSONA_FEATURE environment variable is set
+    $personaFeature = $env:PERSONA_FEATURE
+    if ($personaFeature) {
+        return $personaFeature
+    }
+
     try {
-        return (git rev-parse --show-toplevel 2>$null)
-    } catch {
-        return $null
-    }
-}
-
-# --- PERSONA KIT SPECIFIC FUNCTIONS ---
-function Get-PersonaKitRoot {
-    param(
-        [string]$CurrentDir = $(Get-Location)
-    )
-    
-    $searchDir = $CurrentDir
-    $rootDir = [System.IO.Path]::GetPathRoot($searchDir)
-    
-    while ($searchDir -ne $rootDir) {
-        $personakitDir = Join-Path $searchDir ".personakit"
-        if (Test-Path $personakitDir -PathType Container) {
-            return $searchDir
+        # Then check git if available
+        $branch = git rev-parse --abbrev-ref HEAD 2>$null
+        if ($LASTEXITCODE -eq 0) {
+            return $branch
         }
-        
-        $parentDir = Split-Path $searchDir -Parent
-        if ($parentDir -eq $searchDir) { 
-            # We've reached the root
-            break
-        }
-        $searchDir = $parentDir
     }
-    
-    return $null
-}
+    catch {
+        # Git not available
+    }
 
-function Get-ActiveFeature {
-    # If PERSONAKIT_FEATURE is set, use it
-    if ($global:PERSONAKIT_FEATURE -and $global:PERSONAKIT_FEATURE -ne "") {
-        return $global:PERSONAKIT_FEATURE
-    }
-    
-    # Otherwise, get from git branch name
-    if (Test-GitRepo) {
-        try {
-            $branchName = git branch --show-current 2>$null
-            if ($branchName -and $branchName -ne "") {
-                return $branchName
+    # For non-git repos, try to find the latest feature directory
+    $repoRoot = Get-RepoRoot
+    $featuresDir = Join-Path $repoRoot ".features"
+
+    if (Test-Path $featuresDir) {
+        $latestFeature = ""
+        $highest = 0
+
+        Get-ChildItem $featuresDir -Directory | ForEach-Object {
+            $dirName = $_.Name
+            if ($dirName -match '^(\d{3})-') {
+                $number = [int]$matches[1]
+                if ($number -gt $highest) {
+                    $highest = $number
+                    $latestFeature = $dirName
+                }
             }
-        } catch {
-            # Git command failed, continue
+        }
+
+        if ($latestFeature) {
+            return $latestFeature
         }
     }
-    
-    Log-Error "Could not determine active feature. Either set PERSONAKIT_FEATURE environment variable or use git branches."
-    return $null
+
+    return "main"  # Final fallback
 }
 
-# --- DIRECTORY MANAGEMENT ---
-function Ensure-Directory {
-    param([string]$Dir)
-    
-    if (-not (Test-Path $Dir -PathType Container)) {
-        New-Item -ItemType Directory -Path $Dir -Force | Out-Null
-        Log-Info "Created directory: $Dir"
+# Check if we have git available
+function Test-Git {
+    try {
+        git rev-parse --show-toplevel 2>$null | Out-Null
+        return $LASTEXITCODE -eq 0
     }
-}
-
-# --- FILE MANAGEMENT ---
-function Ensure-File {
-    param(
-        [string]$File,
-        [string]$TemplateDir = ""
-    )
-    
-    if (-not (Test-Path $File -PathType Leaf)) {
-        $fileDir = Split-Path $File -Parent
-        Ensure-Directory -Dir $fileDir
-        
-        if ($TemplateDir -and (Test-Path (Join-Path $TemplateDir (Split-Path $File -Leaf)) -PathType Leaf)) {
-            $templateFile = Join-Path $TemplateDir (Split-Path $File -Leaf)
-            Copy-Item -Path $templateFile -Destination $File
-            Log-Info "Created file from template: $File"
-        } else {
-            # Create an empty file
-            '' | Out-File -FilePath $File -Encoding UTF8
-            Log-Info "Created empty file: $File"
-        }
-    }
-}
-
-# --- PERSONA SPECIFIC FUNCTIONS ---
-function Get-PersonaGuidanceDir {
-    $personakitRoot = Get-PersonaKitRoot
-    if (-not $personakitRoot) {
-        Log-Error "Could not find .personakit directory"
-        return $null
-    }
-    
-    $feature = Get-ActiveFeature
-    if (-not $feature) {
-        return $null
-    }
-    
-    return Join-Path $personakitRoot "personas" $feature
-}
-
-function Ensure-PersonaGuidanceStructure {
-    $guidanceDir = Get-PersonaGuidanceDir
-    if (-not $guidanceDir) {
+    catch {
         return $false
     }
-    
-    Ensure-Directory -Dir $guidanceDir
-    
-    # Create standard persona guidance files
-    $guidanceFiles = @(
-        "ceo-perspective.md",
-        "engineering-perspective.md",
-        "architecture-notes.md",
-        "development-plan.md",
-        "qa-assessment.md",
-        "security-review.md",
-        "devops-considerations.md",
-        "multi-perspective-summary.md"
+}
+
+function Test-FeatureBranch {
+    param(
+        [string]$Branch,
+        [bool]$HasGitRepo
     )
-    
-    foreach ($file in $guidanceFiles) {
-        $filePath = Join-Path $guidanceDir $file
-        Ensure-File -File $filePath
+
+    # For non-git repos, we can't enforce branch naming but still provide output
+    if (-not $HasGitRepo) {
+        Write-Host "[persona-kit] Warning: Git repository not detected; skipped branch validation" -ForegroundColor Yellow
+        return $true
     }
-    
+
+    if ($Branch -notmatch '^\d{3}-') {
+        Write-Host "ERROR: Not on a feature branch. Current branch: $Branch" -ForegroundColor Red
+        Write-Host "Feature branches should be named like: 001-feature-name" -ForegroundColor Red
+        return $false
+    }
+
     return $true
 }
 
-# --- PATH RESOLUTION ---
-function Get-PersonaKitTemplatesDir {
-    $personakitRoot = Get-PersonaKitRoot
-    if (-not $personakitRoot) {
-        return $null
-    }
-    
-    return Join-Path $personakitRoot ".personakit" "templates"
+function Get-FeatureDir {
+    param([string]$RepoRoot, [string]$Branch)
+    return Join-Path $RepoRoot ".features" $Branch
 }
 
-function Get-PersonaKitScriptsDir {
-    $personakitRoot = Get-PersonaKitRoot
-    if (-not $personakitRoot) {
-        return $null
+function Get-FeaturePaths {
+    $repoRoot = Get-RepoRoot
+    $currentBranch = Get-CurrentBranch
+    $hasGitRepo = Test-Git
+
+    $featureDir = Get-FeatureDir $repoRoot $currentBranch
+    $personaKitDir = Join-Path $repoRoot "persona-kit"
+
+    return @{
+        REPO_ROOT = $repoRoot
+        CURRENT_BRANCH = $currentBranch
+        HAS_GIT = $hasGitRepo
+        FEATURE_DIR = $featureDir
+        PERSONA_KIT_DIR = $personaKitDir
+        PERSONAS_DIR = Join-Path $personaKitDir "personas"
+        PATTERNS_DIR = Join-Path $personaKitDir "patterns"
+        WORKFLOWS_DIR = Join-Path $personaKitDir "workflows"
+        FEATURE_SPEC = Join-Path $featureDir "spec.md"
+        IMPL_PLAN = Join-Path $featureDir "plan.md"
+        TASKS = Join-Path $featureDir "tasks.md"
+        RESEARCH = Join-Path $featureDir "research.md"
+        DATA_MODEL = Join-Path $featureDir "data-model.md"
+        QUICKSTART = Join-Path $featureDir "quickstart.md"
+        CONTRACTS_DIR = Join-Path $featureDir "contracts"
     }
-    
-    return Join-Path $personakitRoot ".personakit" "scripts"
 }
 
-function Get-PersonaKitMemoryDir {
-    $personakitRoot = Get-PersonaKitRoot
-    if (-not $personakitRoot) {
-        return $null
+# Check if file exists and is not empty
+function Test-File {
+    param([string]$Path, [string]$Description)
+    if (Test-Path $Path) {
+        Write-Host "  ✓ $Description" -ForegroundColor Green
+    } else {
+        Write-Host "  ✗ $Description" -ForegroundColor Red
     }
-    
-    return Join-Path $personakitRoot ".personakit" "memory"
 }
 
-# --- UTILITY FUNCTIONS ---
-function Update-ClaudeContext {
-    param([string]$ClaudeFile = "")
-    
-    if ($ClaudeFile -and (Test-Path $ClaudeFile -PathType Leaf)) {
-        Log-Info "Updating Claude context file: $ClaudeFile"
-        
-        # Add current persona guidance to Claude context
-        $guidanceDir = Get-PersonaGuidanceDir
-        if (-not $guidanceDir) {
+# Check if directory exists and is not empty
+function Test-Directory {
+    param([string]$Path, [string]$Description)
+    if (Test-Path $Path) {
+        $items = Get-ChildItem $Path -ErrorAction SilentlyContinue
+        if ($items.Count -gt 0) {
+            Write-Host "  ✓ $Description" -ForegroundColor Green
+        } else {
+            Write-Host "  ✗ $Description" -ForegroundColor Red
+        }
+    } else {
+        Write-Host "  ✗ $Description" -ForegroundColor Red
+    }
+}
+
+# Get available personas from the personas directory
+function Get-AvailablePersonas {
+    param([string]$PersonaKitDir)
+
+    $personasDir = Join-Path $PersonaKitDir "personas"
+    $personas = @()
+
+    if (Test-Path $personasDir) {
+        Get-ChildItem $personasDir -Directory | ForEach-Object {
+            $personaDir = $_.FullName
+            $personaFile = Join-Path $personaDir "persona.md"
+            if (Test-Path $personaFile) {
+                $personas += $_.Name
+            }
+        }
+    }
+
+    return $personas
+}
+
+# Get available patterns from the patterns directory
+function Get-AvailablePatterns {
+    param([string]$PersonaKitDir)
+
+    $patternsDir = Join-Path $PersonaKitDir "patterns"
+    $patterns = @()
+
+    if (Test-Path $patternsDir) {
+        Get-ChildItem $patternsDir -Directory | ForEach-Object {
+            $patterns += $_.Name
+        }
+    }
+
+    return $patterns
+}
+
+# Get available workflows from the workflows directory
+function Get-AvailableWorkflows {
+    param([string]$PersonaKitDir)
+
+    $workflowsDir = Join-Path $PersonaKitDir "workflows"
+    $workflows = @()
+
+    if (Test-Path $workflowsDir) {
+        Get-ChildItem $workflowsDir -Directory | ForEach-Object {
+            $workflowDir = $_.FullName
+            $workflowFile = Join-Path $workflowDir "workflow.md"
+            if (Test-Path $workflowFile) {
+                $workflows += $_.Name
+            }
+        }
+    }
+
+    return $workflows
+}
+
+# Validate that required persona-kit structure exists
+function Test-PersonaKitStructure {
+    param([string]$RepoRoot)
+
+    $requiredDirs = @(
+        (Join-Path $RepoRoot "persona-kit"),
+        (Join-Path $RepoRoot "persona-kit/personas"),
+        (Join-Path $RepoRoot "persona-kit/patterns"),
+        (Join-Path $RepoRoot "persona-kit/workflows")
+    )
+
+    foreach ($dir in $requiredDirs) {
+        if (-not (Test-Path $dir)) {
+            Write-Host "ERROR: Required directory not found: $dir" -ForegroundColor Red
             return $false
         }
-        
-        $contentToAdd = @()
-        $contentToAdd += "## PERSONA GUIDANCE"
-        $contentToAdd += ""
-        $contentToAdd += "Current feature: $(Get-ActiveFeature)"
-        $contentToAdd += ""
-        
-        # Add CEO perspective if available
-        $ceoFile = Join-Path $guidanceDir "ceo-perspective.md"
-        if (Test-Path $ceoFile -PathType Leaf) {
-            $contentToAdd += "### CEO Perspective"
-            $contentToAdd += ""
-            $contentToAdd += (Get-Content $ceoFile -Raw) -split "`n"
-            $contentToAdd += ""
-        }
-        
-        # Add Engineering perspective if available
-        $engFile = Join-Path $guidanceDir "engineering-perspective.md"
-        if (Test-Path $engFile -PathType Leaf) {
-            $contentToAdd += "### Engineering Perspective"
-            $contentToAdd += ""
-            $contentToAdd += (Get-Content $engFile -Raw) -split "`n"
-            $contentToAdd += ""
-        }
-        
-        # Add Architecture notes if available
-        $archFile = Join-Path $guidanceDir "architecture-notes.md"
-        if (Test-Path $archFile -PathType Leaf) {
-            $contentToAdd += "### Architecture Notes"
-            $contentToAdd += ""
-            $contentToAdd += (Get-Content $archFile -Raw) -split "`n"
-            $contentToAdd += ""
-        }
-        
-        # Add Development plan if available
-        $devFile = Join-Path $guidanceDir "development-plan.md"
-        if (Test-Path $devFile -PathType Leaf) {
-            $contentToAdd += "### Development Plan"
-            $contentToAdd += ""
-            $contentToAdd += (Get-Content $devFile -Raw) -split "`n"
-            $contentToAdd += ""
-        }
-        
-        # Add QA assessment if available
-        $qaFile = Join-Path $guidanceDir "qa-assessment.md"
-        if (Test-Path $qaFile -PathType Leaf) {
-            $contentToAdd += "### QA Assessment"
-            $contentToAdd += ""
-            $contentToAdd += (Get-Content $qaFile -Raw) -split "`n"
-            $contentToAdd += ""
-        }
-        
-        # Add Security review if available
-        $secFile = Join-Path $guidanceDir "security-review.md"
-        if (Test-Path $secFile -PathType Leaf) {
-            $contentToAdd += "### Security Review"
-            $contentToAdd += ""
-            $contentToAdd += (Get-Content $secFile -Raw) -split "`n"
-            $contentToAdd += ""
-        }
-        
-        # Add DevOps considerations if available
-        $devopsFile = Join-Path $guidanceDir "devops-considerations.md"
-        if (Test-Path $devopsFile -PathType Leaf) {
-            $contentToAdd += "### DevOps Considerations"
-            $contentToAdd += ""
-            $contentToAdd += (Get-Content $devopsFile -Raw) -split "`n"
-            $contentToAdd += ""
-        }
-        
-        # Add to the Claude file
-        $contentToAdd | Out-File -FilePath $ClaudeFile -Append -Encoding UTF8
-        
-        Log-Info "Updated Claude context with persona guidance"
-        return $true
     }
-    
-    return $false
+
+    return $true
+}
+
+# Create feature directory structure
+function New-FeatureStructure {
+    param([string]$FeatureDir)
+
+    New-Item -ItemType Directory -Force -Path $FeatureDir | Out-Null
+
+    # Create standard feature files
+    New-Item -ItemType File -Force -Path (Join-Path $FeatureDir "spec.md") | Out-Null
+    New-Item -ItemType File -Force -Path (Join-Path $FeatureDir "plan.md") | Out-Null
+    New-Item -ItemType File -Force -Path (Join-Path $FeatureDir "tasks.md") | Out-Null
+    New-Item -ItemType File -Force -Path (Join-Path $FeatureDir "research.md") | Out-Null
+    New-Item -ItemType Directory -Force -Path (Join-Path $FeatureDir "contracts") | Out-Null
+}
+
+# Copy persona files to feature directory
+function Copy-PersonaFiles {
+    param(
+        [string]$FeatureDir,
+        [string]$PersonasDir,
+        [string[]]$SelectedPersonas
+    )
+
+    foreach ($persona in $SelectedPersonas) {
+        $personaSource = Join-Path $PersonasDir "$persona/persona.md"
+        $personaDest = Join-Path $FeatureDir "personas/$persona.md"
+
+        if (Test-Path $personaSource) {
+            New-Item -ItemType Directory -Force -Path (Split-Path $personaDest) | Out-Null
+            Copy-Item $personaSource $personaDest -Force
+            Write-Host "  ✓ Copied $persona persona" -ForegroundColor Green
+        } else {
+            Write-Host "  ⚠ Persona $persona not found at $personaSource" -ForegroundColor Yellow
+        }
+    }
+}
+
+# Copy pattern files to feature directory
+function Copy-PatternFiles {
+    param(
+        [string]$FeatureDir,
+        [string]$PatternsDir,
+        [string[]]$SelectedPatterns
+    )
+
+    foreach ($pattern in $SelectedPatterns) {
+        # Find pattern files in the pattern directory
+        $patternPath = Join-Path $PatternsDir $pattern
+        if (Test-Path $patternPath) {
+            Get-ChildItem $patternPath -File | ForEach-Object {
+                $patternName = $_.BaseName
+                $patternDest = Join-Path $FeatureDir "patterns/$pattern/$patternName.md"
+
+                New-Item -ItemType Directory -Force -Path (Split-Path $patternDest) | Out-Null
+                Copy-Item $_.FullName $patternDest -Force
+                Write-Host "  ✓ Copied $pattern/$patternName pattern" -ForegroundColor Green
+            }
+        }
+    }
+}
+
+# Copy workflow files to feature directory
+function Copy-WorkflowFiles {
+    param(
+        [string]$FeatureDir,
+        [string]$WorkflowsDir,
+        [string[]]$SelectedWorkflows
+    )
+
+    foreach ($workflow in $SelectedWorkflows) {
+        $workflowSource = Join-Path $WorkflowsDir "$workflow/workflow.md"
+        $workflowDest = Join-Path $FeatureDir "workflows/$workflow.md"
+
+        if (Test-Path $workflowSource) {
+            New-Item -ItemType Directory -Force -Path (Split-Path $workflowDest) | Out-Null
+            Copy-Item $workflowSource $workflowDest -Force
+            Write-Host "  ✓ Copied $workflow workflow" -ForegroundColor Green
+        } else {
+            Write-Host "  ⚠ Workflow $workflow not found at $workflowSource" -ForegroundColor Yellow
+        }
+    }
+}
+
+# Generate feature summary
+function New-FeatureSummary {
+    param(
+        [string]$FeatureDir,
+        [string]$Branch
+    )
+
+    $readmePath = Join-Path $FeatureDir "README.md"
+    $currentDate = Get-Date -Format "yyyy-MM-dd"
+
+    $content = @"
+# Feature: $Branch
+
+This directory contains all persona-kit artifacts for feature development.
+
+## Structure
+
+- `spec.md` - Feature specification and requirements
+- `plan.md` - Implementation plan and technical details
+- `tasks.md` - Development tasks and checklist
+- `research.md` - Research notes and references
+- `personas/` - Persona definitions for this feature
+- `patterns/` - Relevant patterns for this feature
+- `workflows/` - Applicable workflows for this feature
+- `contracts/` - API contracts and data models
+
+## Getting Started
+
+1. Review the feature specification in `spec.md`
+2. Check the implementation plan in `plan.md`
+3. Follow the tasks in `tasks.md`
+4. Use the provided personas, patterns, and workflows as needed
+
+## Branch Information
+
+- **Branch**: `$Branch`
+- **Created**: `$currentDate`
+- **Status**: Active development
+
+"@
+
+    $content | Out-File -FilePath $readmePath -Encoding UTF8
 }

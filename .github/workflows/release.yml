@@ -4,9 +4,9 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'memory/**'
-      - 'scripts/**'
-      - 'templates/**'
+      - 'src/**'
+      - 'persona-kit/**'
+      - 'pyproject.toml'
       - '.github/workflows/**'
   workflow_dispatch:
 
@@ -16,44 +16,73 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      id-token: write  # OIDC for PyPI publishing
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install build dependencies
+        run: |
+          python -m pip install --upgrade uv
+          uv pip install build twine
+
       - name: Get latest tag
         id: get_tag
         run: |
-          chmod +x .github/workflows/scripts/get-next-version.sh
-          .github/workflows/scripts/get-next-version.sh
+          chmod +x .github/scripts/get-next-version.sh
+          .github/scripts/get-next-version.sh
+
       - name: Check if release already exists
         id: check_release
         run: |
-          chmod +x .github/workflows/scripts/check-release-exists.sh
-          .github/workflows/scripts/check-release-exists.sh ${{ steps.get_tag.outputs.new_version }}
+          chmod +x .github/scripts/check-release-exists.sh
+          .github/scripts/check-release-exists.sh ${{ steps.get_tag.outputs.new_version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Create release package variants
+
+      - name: Build package
         if: steps.check_release.outputs.exists == 'false'
         run: |
-          chmod +x .github/workflows/scripts/create-release-packages.sh
-          .github/workflows/scripts/create-release-packages.sh ${{ steps.get_tag.outputs.new_version }}
+          python -m build
+
+      - name: Publish to PyPI
+        if: steps.check_release.outputs.exists == 'false'
+        run: |
+          if [ -n "${{ secrets.PYPI_API_TOKEN }}" ]; then
+            chmod +x .github/scripts/publish-to-pypi.sh
+            .github/scripts/publish-to-pypi.sh ${{ steps.get_tag.outputs.new_version }}
+          else
+            echo "PYPI_API_TOKEN not configured - skipping PyPI publication"
+          fi
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+
       - name: Generate release notes
         if: steps.check_release.outputs.exists == 'false'
         id: release_notes
         run: |
-          chmod +x .github/workflows/scripts/generate-release-notes.sh
-          .github/workflows/scripts/generate-release-notes.sh ${{ steps.get_tag.outputs.new_version }} ${{ steps.get_tag.outputs.latest_tag }}
+          chmod +x .github/scripts/generate-release-notes.sh
+          .github/scripts/generate-release-notes.sh ${{ steps.get_tag.outputs.new_version }} ${{ steps.get_tag.outputs.latest_tag }}
+
       - name: Create GitHub Release
         if: steps.check_release.outputs.exists == 'false'
         run: |
-          chmod +x .github/workflows/scripts/create-github-release.sh
-          .github/workflows/scripts/create-github-release.sh ${{ steps.get_tag.outputs.new_version }}
+          chmod +x .github/scripts/create-github-release.sh
+          .github/scripts/create-github-release.sh ${{ steps.get_tag.outputs.new_version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Update version in pyproject.toml (for release artifacts only)
+
+      - name: Update version in pyproject.toml
         if: steps.check_release.outputs.exists == 'false'
         run: |
-          chmod +x .github/workflows/scripts/update-version.sh
-          .github/workflows/scripts/update-version.sh ${{ steps.get_tag.outputs.new_version }}
+          chmod +x .github/scripts/update-version.sh
+          .github/scripts/update-version.sh ${{ steps.get_tag.outputs.new_version }}

@@ -1,472 +1,263 @@
 <div align="center">
-    <img src="./media/persona.png"/>
-    <h1>👥 Persona Kit</h1>
-    <h3><em>Access the expertise of a full development company through AI personas.</em></h3>
+    <h1>🎭 Persona Kit</h1>
+    <h3><em>Build software with persona-driven development workflows.</em></h3>
 </div>
 
 <p align="center">
-    <strong>Persona Kit provides AI-powered personas mimicking a full-scale development company, enabling individuals and small teams to access specialized expertise from various roles including CEO, Engineering Manager, Architect, Developer, QA, Security, and DevOps. Personas collaborate automatically to provide comprehensive guidance on projects and decisions.</strong>
+    <strong>A toolkit for creating, managing, and utilizing AI personas to enhance software development workflows and decision-making processes.</strong>
 </p>
 
 <p align="center">
-    <a href="https://github.com/Nom-nom-hub/persona-kit/actions/workflows/release.yml"><img src="https://github.com/Nom-nom-hub/persona-kit/actions/workflows/release.yml/badge.svg" alt="Release"/></a>
-    <a href="https://github.com/Nom-nom-hub/persona-kit/stargazers"><img src="https://img.shields.io/github/stars/Nom-nom-hub/persona-kit?style=social" alt="GitHub stars"/></a>
-    <a href="https://github.com/Nom-nom-hub/persona-kit/blob/main/LICENSE"><img src="https://img.shields.io/github/license/Nom-nom-hub/persona-kit" alt="License"/></a>
-    <a href="https://nom-nom-hub.github.io/persona-kit/"><img src="https://img.shields.io/badge/docs-GitHub_Pages-blue" alt="Documentation"/></a>
+    <a href="#"><img src="https://img.shields.io/badge/version-0.1.0-blue" alt="Version"/></a>
+    <a href="#"><img src="https://img.shields.io/badge/python-3.11+-green" alt="Python"/></a>
+    <a href="#"><img src="https://img.shields.io/badge/license-MIT-yellow" alt="License"/></a>
 </p>
 
 ---
 
 ## Table of Contents
 
-- [🤔 What is Persona Kit?](#-what-is-persona-kit)
-- [⚡ Get started](#-get-started)
-- [👥 Available Personas](#-available-personas)
-- [🤖 Supported AI Agents](#-supported-ai-agents)
-- [🔧 Persona Kit CLI Reference](#-personakit-cli-reference)
-- [📚 Core philosophy](#-core-philosophy)
-- [🌟 Development phases](#-development-phases)
-- [🎯 Experimental goals](#-experimental-goals)
-- [🔧 Prerequisites](#-prerequisites)
-- [📖 Learn more](#-learn-more)
-- [📋 Detailed process](#-detailed-process)
-- [🔍 Troubleshooting](#-troubleshooting)
-- [👥 Maintainers](#-maintainers)
-- [💬 Support](#-support)
-- [🙏 Acknowledgements](#-acknowledgements)
+- [🌟 What is Persona Kit?](#-what-is-persona-kit)
+- [🚀 Key Features](#-key-features)
+- [⚡ Quick Start](#-quick-start)
+- [📁 Project Structure](#-project-structure)
+- [🔧 Configuration](#-configuration)
+- [🎭 Persona Management](#-persona-management)
+- [🔄 Workflows](#-workflows)
+- [📚 Documentation](#-documentation)
+- [🤝 Contributing](#-contributing)
 - [📄 License](#-license)
 
-## 🤔 What is Persona Kit?
+## 🌟 What is Persona Kit?
 
-Persona Kit **democratizes access to specialized development expertise** by providing AI-powered personas that simulate various roles in a large development company. Rather than providing isolated perspectives, the personas automatically collaborate, combining strategic guidance from the CEO, technical architecture advice from the Architect, implementation details from the Developer, and insights from other roles to provide comprehensive, multi-faceted guidance.
+Persona Kit is a comprehensive toolkit designed for **persona-driven development** - an approach that leverages AI personas to enhance software development workflows, improve decision-making, and maintain consistency across projects.
 
-This collaborative approach allows individuals and small teams to make better decisions by leveraging the collective expertise typically found only in large organizations.
+Unlike traditional development approaches, Persona Kit allows you to:
 
-## ⚡ Get started
+- **Define specialized AI personas** for different roles (architect, developer, tester, product manager, etc.)
+- **Create reusable interaction patterns** that maintain consistency across development sessions
+- **Establish structured workflows** that guide development processes
+- **Maintain shared knowledge bases** that evolve with your project
+- **Generate templates** for common development tasks and documentation
 
-### 1. Install Persona Kit
+## 🚀 Key Features
 
-Choose your preferred installation method:
+### 🎭 Persona System
+- **Role-based personas** with specialized knowledge and behaviors
+- **Context-aware interactions** that adapt to project needs
+- **Persona memory** that accumulates project-specific knowledge
+- **Persona switching** for multi-role development scenarios
 
-#### Option 1: Persistent Installation (Recommended)
+### 🔄 Workflow Management
+- **Structured development workflows** with clear phases
+- **Template-based task generation** for consistency
+- **Progress tracking** and state management
+- **Integration with popular development tools**
 
-Install once and use everywhere:
+### 📚 Knowledge Management
+- **Shared memory system** for project context
+- **Pattern libraries** for common development scenarios
+- **Template repositories** for documentation and code
+- **Historical context** preservation
+
+### ⚙️ Developer Experience
+- **Python-based CLI** for easy integration
+- **Rich configuration system** for customization
+- **Extensive documentation** and examples
+- **Cross-platform compatibility**
+
+## ⚡ Quick Start
+
+### 1. Installation
+
+#### Option 1: Install as a tool (Recommended)
 
 ```bash
+# Install persona-kit as a global tool
 uv tool install personakit-cli --from git+https://github.com/Nom-nom-hub/persona-kit.git
-```
 
-Then use the tool directly:
-
-```bash
+# The tool is now available as 'personakit' command
 personakit init <PROJECT_NAME>
-personakit check
 ```
 
-To upgrade personakit run:
+#### Option 2: Use with uvx (No installation required)
 
 ```bash
-uv tool install personakit-cli --force --from git+https://github.com/Nom-nom-hub/persona-kit.git
+# Run directly with uvx (requires uv installed)
+uvx --from git+https://github.com/Nom-nom-hub/persona-kit.git personakit init <PROJECT_NAME>
+
+# Or initialize in current directory
+uvx --from git+https://github.com/Nom-nom-hub/persona-kit.git personakit init --here
 ```
 
-#### Option 2: One-time Usage
-
-Run directly without installing:
+#### Option 3: Traditional installation (For development)
 
 ```bash
+# Clone the repository
+git clone https://github.com/Nom-nom-hub/persona-kit.git
+cd persona-kit
+
+# Install in development mode
+uv pip install -e .
+```
+
+### 2. Initialize a Project
+
+```bash
+# Initialize persona-kit in your project
+personakit init <PROJECT_NAME>
+
+# Or initialize in current directory
+personakit init --here
+
+# Or use with uvx (no installation required)
 uvx --from git+https://github.com/Nom-nom-hub/persona-kit.git personakit init <PROJECT_NAME>
 ```
 
-**Benefits of persistent installation:**
-
-- Tool stays installed and available in PATH
-- No need to create shell aliases
-- Better tool management with `uv tool list`, `uv tool upgrade`, `uv tool uninstall`
-- Cleaner shell configuration
-
-### 2. Establish project principles
-
-Use the **`/personakit.constitution`** command to create your project's governing principles and development guidelines that will guide all subsequent development.
+### 3. Create Your First Persona
 
 ```bash
-/personakit.constitution Create principles focused on code quality, testing standards, user experience consistency, and performance requirements
+# Create a development persona
+personakit persona create "Senior Python Developer" --role developer --expertise python,architecture,testing
 ```
 
-### 3. Engage with personas
-
-Use persona commands to get specialized insights:
+### 4. Set Up a Workflow
 
 ```bash
-/personakit.personas                    # List available personas
-/personakit.ceo What features should we prioritize for maximum business value?
-/personakit.architect How should we structure our microservices architecture?
-/personakit.developer What's the best approach to implement this specific feature?
-/personakit.qa What testing strategy should we follow for this functionality?
+# Create a standard development workflow
+personakit workflow create "feature-development" --template feature
 ```
 
-### 4. Get multi-perspective insights
+## 📁 Project Structure
 
-Combine insights from multiple personas or simulate team collaboration:
-
-```bash
-/personakit.multi-perspective Analyze our proposed database schema from development, QA, and security perspectives
-/personakit.role-play Simulate a team meeting to discuss the technical approach for our new feature
-/personakit.company-team Address complex projects with coordinated input from all relevant personas
-/personakit.auto-route Automatically route to the most appropriate persona(s) for your query
-/personakit.advanced-auto-route Advanced intelligent routing with comprehensive multi-persona coordination
-/personakit.orchestrator Full team orchestration - automatically engages all relevant personas for comprehensive input
+```
+persona-kit/
+├── .persona-kit/           # Core system directory
+│   ├── memory/            # Shared knowledge and context
+│   ├── personas/          # Persona definitions and configurations
+│   ├── patterns/          # Interaction patterns and behaviors
+│   ├── workflows/         # Defined workflow templates
+│   ├── templates/         # Reusable templates
+│   └── scripts/           # Automation scripts
+├── src/                   # Source code
+│   └── persona_kit/       # Main package
+├── docs/                  # Documentation
+├── media/                 # Images and assets
+├── pyproject.toml         # Project configuration
+├── README.md             # This file
+├── LICENSE               # License file
+└── .gitignore           # Git ignore patterns
 ```
 
-For complex decisions, consider using the collaborative approaches by default rather than single-persona consultation. The automated routing and orchestration commands ensure all relevant perspectives are considered automatically.
+## 🔧 Configuration
 
-For detailed step-by-step instructions, see our [comprehensive guide](./persona-driven.md).
+### Basic Configuration
 
-## 👥 Available Personas
+The `pyproject.toml` file contains the main project configuration:
 
-Persona Kit provides access to AI personas representing various roles in a development company:
+```toml
+[project]
+name = "persona-kit"
+version = "0.1.0"
+description = "A toolkit for persona-driven development workflows"
 
-| Persona | Role | Expertise Area |
-|---------|------|----------------|
-| **CEO** | `/personakit.ceo` | Strategic business guidance, feature prioritization, market positioning |
-| **Engineering Manager** | `/personakit.engineering-manager` | Team dynamics, project timelines, resource allocation |
-| **Architect** | `/personakit.architect` | System design, technology selection, scalability |
-| **Developer** | `/personakit.developer` | Implementation details, coding best practices |
-| **QA Engineer** | `/personakit.qa` | Testing strategy, quality assurance, bug prevention |
-| **Security Engineer** | `/personakit.security` | Security best practices, vulnerability assessment |
-| **DevOps Engineer** | `/personakit.devops` | Deployment, infrastructure, monitoring |
-
-## 🤖 Supported AI Agents
-
-| Agent                                                     | Support | Notes                                             |
-|-----------------------------------------------------------|---------|---------------------------------------------------|
-| [Claude Code](https://www.anthropic.com/claude-code)      | ✅ |                                                   |
-| [GitHub Copilot](https://code.visualstudio.com/)          | ✅ |                                                   |
-| [Gemini CLI](https://github.com/google-gemini/gemini-cli) | ✅ |                                                   |
-| [Cursor](https://cursor.sh/)                              | ✅ |                                                   |
-| [Qwen Code](https://github.com/QwenLM/qwen-code)          | ✅ |                                                   |
-| [opencode](https://opencode.ai/)                          | ✅ |                                                   |
-| [Codex CLI](https://github.com/openai/codex)              | ✅ |                                                   |
-| [Windsurf](https://windsurf.com/)                         | ✅ |                                                   |
-| [Kilo Code](https://github.com/Kilo-Org/kilocode)         | ✅ |                                                   |
-| [Auggie CLI](https://docs.augmentcode.com/cli/overview)   | ✅ |                                                   |
-| [CodeBuddy](https://www.codebuddy.ai/)                    | ✅ |                                                   |
-| [Roo Code](https://roocode.com/)                          | ✅ |                                                   |
-| [Amazon Q Developer CLI](https://aws.amazon.com/developer/learning/q-developer-cli/) | ⚠️ | Amazon Q Developer CLI [does not support](https://github.com/aws/amazon-q-developer-cli/issues/3064) custom arguments for slash commands. |
-
-## 🔧 Persona Kit CLI Reference
-
-The `personakit` command supports the following options:
-
-### Commands
-
-| Command     | Description                                                    |
-|-------------|----------------------------------------------------------------|
-| `init`      | Initialize a new Persona Kit project from the latest template      |
-| `check`     | Check for installed tools (`git`, `claude`, `gemini`, `code`/`code-insiders`, `cursor-agent`, `windsurf`, `qwen`, `opencode`, `codex`) |
-
-### `personakit init` Arguments & Options
-
-| Argument/Option        | Type     | Description                                                                  |
-|------------------------|----------|------------------------------------------------------------------------------|
-| `<project-name>`       | Argument | Name for your new project directory (optional if using `--here`, or use `.` for current directory) |
-| `--ai`                 | Option   | AI assistant to use: `claude`, `gemini`, `copilot`, `cursor-agent`, `qwen`, `opencode`, `codex`, `windsurf`, `kilocode`, `auggie`, `roo`, `codebuddy`, or `q` |
-| `--script`             | Option   | Script variant to use: `sh` (bash/zsh) or `ps` (PowerShell)                 |
-| `--ignore-agent-tools` | Flag     | Skip checks for AI agent tools like Claude Code                             |
-| `--no-git`             | Flag     | Skip git repository initialization                                          |
-| `--here`               | Flag     | Initialize project in the current directory instead of creating a new one   |
-| `--force`              | Flag     | Force merge/overwrite when initializing in current directory (skip confirmation) |
-| `--skip-tls`           | Flag     | Skip SSL/TLS verification (not recommended)                                 |
-| `--debug`              | Flag     | Enable detailed debug output for troubleshooting                            |
-| `--github-token`       | Option   | GitHub token for API requests (or set GH_TOKEN/GITHUB_TOKEN env variable)  |
-
-### Examples
-
-```bash
-# Basic project initialization
-personakit init my-project
-
-# Initialize with specific AI assistant
-personakit init my-project --ai claude
-
-# Initialize with Cursor support
-personakit init my-project --ai cursor-agent
-
-# Initialize with Windsurf support
-personakit init my-project --ai windsurf
-
-# Initialize with PowerShell scripts (Windows/cross-platform)
-personakit init my-project --ai copilot --script ps
-
-# Initialize in current directory
-personakit init . --ai copilot
-# or use the --here flag
-personakit init --here --ai copilot
-
-# Force merge into current (non-empty) directory without confirmation
-personakit init . --force --ai copilot
-# or 
-personakit init --here --force --ai copilot
-
-# Skip git initialization
-personakit init my-project --ai gemini --no-git
-
-# Enable debug output for troubleshooting
-personakit init my-project --ai claude --debug
-
-# Use GitHub token for API requests (helpful for corporate environments)
-personakit init my-project --ai claude --github-token ghp_your_token_here
-
-# Check system requirements
-personakit check
+[tool.persona-kit]
+default-persona = "assistant"
+memory-backend = "local"
+log-level = "INFO"
 ```
-
-### Available Slash Commands
-
-After running `personakit init`, your AI coding agent will have access to these slash commands for persona-driven development:
-
-#### Core Persona Commands
-
-Essential commands for accessing different development perspectives:
-
-| Command                  | Description                                                           |
-|--------------------------|-----------------------------------------------------------------------|
-| `/personakit.personas`   | List all available personas and their expertise areas                 |
-| `/personakit.ceo`        | Access the CEO persona for strategic business guidance                |
-| `/personakit.engineering-manager` | Get insights from an engineering manager perspective         |
-| `/personakit.architect`  | Consult with a software architect persona for design decisions        |
-| `/personakit.developer`  | Get hands-on development guidance from a senior developer persona     |
-| `/personakit.qa`         | Access QA engineer perspective for testing strategy and quality       |
-| `/personakit.security`   | Get security best practices and vulnerability considerations          |
-| `/personakit.devops`     | Access DevOps perspective for deployment and infrastructure guidance  |
-
-#### Advanced Persona Commands
-
-Additional commands for enhanced multi-perspective development:
-
-| Command              | Description                                                           |
-|----------------------|-----------------------------------------------------------------------|
-| `/personakit.multi-perspective` | Combine insights from multiple personas on a single topic     |
-| `/personakit.role-play` | Simulate a team meeting with different personas providing input       |
-| `/personakit.guidance-check` | Validate decisions against multiple persona viewpoints         |
-| `/personakit.company-team` | Engage multiple personas in coordinated manner like a real company team |
-| `/personakit.auto-route` | Automatically route to the most appropriate persona(s) for your query |
-| `/personakit.advanced-auto-route` | Advanced intelligent routing with comprehensive multi-persona coordination |
-| `/personakit.orchestrator` | Full team orchestration - engages all relevant personas automatically |
-
-#### Persona-Driven Development Workflow Commands
-
-Complete development workflow commands for persona-driven development:
-
-| Command              | Description                                                           |
-|----------------------|-----------------------------------------------------------------------|
-| `/personakit.specify` | Create or update feature specification from a natural language description |
-| `/personakit.plan`   | Create implementation plan with technology choices and architecture  |
-| `/personakit.clarify` | Clarify underspecified areas before planning (recommended before `/personakit.plan`) |
-| `/personakit.analyze` | Cross-artifact consistency and coverage analysis (run after `/personakit.tasks`, before `/personakit.implement`) |
-| `/personakit.tasks`  | Generate actionable development tasks from the implementation plan   |
-| `/personakit.checklist` | Generate custom quality checklists for validation |
-| `/personakit.implement` | Execute development tasks to build the feature according to plan and spec |
 
 ### Environment Variables
 
-| Variable         | Description                                                                                    |
-|------------------|------------------------------------------------------------------------------------------------|
-| `PERSONAKIT_FEATURE` | Override feature detection for non-Git repositories. Set to the feature directory name (e.g., `2024-11-15-photo-sharing`) to work on a specific feature when not using Git branches.<br/>**Must be set in the context of the agent you're working with prior to using personas or follow-up commands. |
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `PERSONA_KIT_CONFIG` | Path to config file | `pyproject.toml` |
+| `PERSONA_KIT_LOG_LEVEL` | Logging level | `INFO` |
+| `PERSONA_KIT_MEMORY_PATH` | Memory storage path | `.persona-kit/memory` |
 
-## 📚 Core philosophy
+## 🎭 Persona Management
 
-Persona Kit is built on the philosophy of:
+### Creating Personas
 
-- **Distributed expertise**: Access specialized knowledge from multiple roles without needing a large team
-- **Multi-perspective decision making**: Consider strategic, architectural, implementation, quality, security, and operational perspectives
-- **AI-powered guidance**: Leverage AI to simulate the expertise of various development roles
-- **Scalable mentorship**: Get guidance at the level of expertise typically found in large organizations
-
-## 🌟 Development phases
-
-| Phase | Focus | Key Activities |
-|-------|-------|----------------|
-| **0-to-1 Development** ("Greenfield") | Generate from scratch | <ul><li>Start with high-level requirements</li><li>Engage personas for strategic and technical guidance</li><li>Build production-ready applications with multi-perspective input</li></ul> |
-| **Creative Exploration** | Parallel implementations | <ul><li>Explore diverse solutions with different persona inputs</li><li>Support multiple technology stacks & architectures</li><li>Experiment with UX patterns through multi-perspective feedback</li></ul> |
-| **Iterative Enhancement** ("Brownfield") | Brownfield modernization | <ul><li>Add features iteratively with persona guidance</li><li>Modernize legacy systems with security and operational considerations</li><li>Adapt processes based on multi-perspective feedback</li></ul> |
-
-## 🎯 Experimental goals
-
-Our research and experimentation focus on:
-
-### Expertise democratization
-
-- Make enterprise-level development expertise accessible to individuals and small teams
-- Validate the hypothesis that AI personas can effectively simulate the guidance of a large development organization
-
-### Multi-perspective development
-
-- Demonstrate improved decision-making when multiple viewpoints are considered
-- Incorporate diverse perspectives (business, technical, quality, security, operations) into the development process
-
-### User-centric development
-
-- Enable small teams to consider the same breadth of concerns that large organizations address
-- Support various development approaches from solo developers to small teams with different expertise gaps
-
-## 🔧 Prerequisites
-
-- **Linux/macOS** (or WSL2 on Windows)
-- AI coding agent: [Claude Code](https://www.anthropic.com/claude-code), [GitHub Copilot](https://code.visualstudio.com/), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [Cursor](https://cursor.sh/), [Qwen CLI](https://github.com/QwenLM/qwen-code), [opencode](https://opencode.ai/), [Codex CLI](https://github.com/openai/codex), [Windsurf](https://windsurf.com/), or [Amazon Q Developer CLI](https://aws.amazon.com/developer/learning/q-developer-cli/)
-- [uv](https://docs.astral.sh/uv/) for package management
-- [Python 3.11+](https://www.python.org/downloads/)
-- [Git](https://git-scm.com/downloads)
-
-If you encounter issues with an agent, please open an issue so we can refine the integration.
-
-## 📖 Learn more
-
-- **[Complete Persona-Driven Development Methodology](./persona-driven.md)** - Deep dive into the full process
-- **[Detailed Walkthrough](#-detailed-process)** - Step-by-step implementation guide
-
----
-
-## 📋 Detailed process
-
-<details>
-<summary>Click to expand the detailed step-by-step walkthrough</summary>
-
-You can use the Persona Kit CLI to bootstrap your project, which will bring in the required artifacts in your environment. Run:
+Personas define AI behaviors, knowledge domains, and interaction patterns:
 
 ```bash
-personakit init <project_name>
+# Create a specialized persona
+personakit persona create "Code Reviewer" \
+  --role reviewer \
+  --expertise "code-quality,security,best-practices" \
+  --personality "thorough,constructive,detail-oriented"
 ```
 
-Or initialize in the current directory:
+### Using Personas
 
 ```bash
-personakit init .
-# or use the --here flag
-personakit init --here
-# Skip confirmation when the directory already has files
-personakit init . --force
-# or
-personakit init --here --force
+# Switch to a persona for a session
+personakit persona use "Senior Developer"
+
+# List available personas
+personakit persona list
+
+# Show current persona details
+personakit persona show
 ```
 
-You will be prompted to select the AI agent you are using. You can also proactively specify it directly in the terminal:
+## 🔄 Workflows
+
+### Available Workflow Templates
+
+- **feature-development**: Standard feature development lifecycle
+- **bug-fix**: Bug investigation and resolution process
+- **code-review**: Code review and quality assurance
+- **documentation**: Documentation creation and maintenance
+- **architecture**: System design and architecture planning
+
+### Creating Custom Workflows
 
 ```bash
-personakit init <project_name> --ai claude
-personakit init <project_name> --ai gemini
-personakit init <project_name> --ai copilot
-
-# Or in current directory:
-personakit init . --ai claude
-personakit init . --ai codex
-
-# or use --here flag
-personakit init --here --ai claude
-personakit init --here --ai codex
-
-# Force merge into a non-empty current directory
-personakit init . --force --ai claude
-
-# or
-personakit init --here --force --ai claude
+# Create a custom workflow
+personakit workflow create "api-development" \
+  --steps "design,implement,test,document" \
+  --personas "architect,developer,tester"
 ```
 
-The CLI will check if you have Claude Code, Gemini CLI, Cursor CLI, Qwen CLI, opencode, Codex CLI, or Amazon Q Developer CLI installed. If you do not, or you prefer to get the templates without checking for the right tools, use `--ignore-agent-tools` with your command:
+## 📚 Documentation
+
+- **[User Guide](./docs/)**: Comprehensive usage documentation
+- **[API Reference](./docs/api.md)**: Complete API documentation
+- **[Persona Guide](./docs/personas.md)**: Creating and managing personas
+- **[Workflow Guide](./docs/workflows.md)**: Custom workflow development
+- **[Examples](./docs/examples/)**: Real-world usage examples
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](./CONTRIBUTING.md) for details.
+
+### Development Setup
 
 ```bash
-personakit init <project_name> --ai claude --ignore-agent-tools
+# Clone and setup development environment
+git clone https://github.com/Nom-nom-hub/persona-kit.git
+cd persona-kit
+uv pip install -e ".[dev]"
+
+# Run tests
+uv run pytest
+
+# Format code
+uv run black src/
+uv run isort src/
+
+# Install as a tool for testing
+uv tool install personakit-cli --from git+https://github.com/Nom-nom-hub/persona-kit.git
 ```
-
-### **STEP 1:** Establish project principles
-
-Go to the project folder and run your AI agent. In our example, we're using `claude`.
-
-You will know that things are configured correctly if you see the `/personakit.personas`, `/personakit.ceo`, `/personakit.architect`, `/personakit.developer`, `/personakit.qa`, `/personakit.security`, and `/personakit.devops` commands available.
-
-The first step should be establishing your project's governing principles using the `/personakit.constitution` command. This helps ensure consistent decision-making throughout all subsequent development phases:
-
-```text
-/personakit.constitution Create principles focused on code quality, testing standards, user experience consistency, and performance requirements. Include governance for how these principles should guide technical decisions and implementation choices.
-```
-
-This step creates or updates the `.personakit/memory/constitution.md` file with your project's foundational guidelines that the AI agent will reference during persona interactions.
-
-### **STEP 2:** Engage with personas for guidance
-
-With your project principles established, you can now engage with various personas to get specialized guidance for your project. Different personas provide different perspectives:
-
-- Use `/personakit.ceo` for strategic business guidance
-- Use `/personakit.architect` for system design and technology decisions
-- Use `/personakit.developer` for implementation details
-- Use `/personakit.qa` for testing strategy
-- Use `/personakit.security` for security considerations
-- Use `/personakit.devops` for deployment guidance
-
->[!IMPORTANT]
->Engage with personas in sequence that makes sense for your needs. For major features, consider engaging CEO → Architect → Engineering Manager → Developer → QA → Security → DevOps.
-
-### **STEP 3:** Multi-perspective analysis (optional but recommended)
-
-For important decisions, use the multi-perspective commands to get input from multiple personas simultaneously:
-
-```text
-/personakit.multi-perspective Analyze our proposed database schema from development, QA, and security perspectives
-```
-
-### **STEP 4:** Document persona guidance
-
-All persona guidance is automatically stored in the `personas/` directory in feature-specific subdirectories, allowing you to track the evolution of your project's design and implementation decisions.
-
-The directory structure will look like:
-
-```text
-└── personas
-    └── 2024-11-15-user-authentication  # Feature-specific directory
-        ├── ceo-perspective.md
-        ├── engineering-perspective.md
-        ├── architecture-notes.md
-        ├── development-plan.md
-        ├── qa-assessment.md
-        ├── security-review.md
-        ├── devops-considerations.md
-        └── multi-perspective-summary.md
-```
-
-</details>
-
----
-
-## 🔍 Troubleshooting
-
-### Git Credential Manager on Linux
-
-If you're having issues with Git authentication on Linux, you can install Git Credential Manager:
-
-```bash
-#!/usr/bin/env bash
-set -e
-echo "Downloading Git Credential Manager v2.6.1..."
-wget https://github.com/git-ecosystem/git-credential-manager/releases/download/v2.6.1/gcm-linux_amd64.2.6.1.deb
-echo "Installing Git Credential Manager..."
-sudo dpkg -i gcm-linux_amd64.2.6.1.deb
-echo "Configuring Git to use GCM..."
-git config --global credential.helper manager
-echo "Cleaning up..."
-rm gcm-linux_amd64.2.6.1.deb
-```
-
-## 👥 Maintainers
-
-- Kaiden ([@Nom-nom-hub](https://github.com/Nom-nom-hub)) - Creator and maintainer of Persona Kit
-
-## 💬 Support
-
-For support, please open a [GitHub issue](https://github.com/github/persona-kit/issues/new). We welcome bug reports, feature requests, and questions about using Persona Kit.
-
-## 🙏 Acknowledgements
-
-This project is inspired by methodologies like Spec-Driven Development and aims to provide similar benefits through persona-driven approaches.
 
 ## 📄 License
 
-This project is licensed under the terms of the MIT open source license. Please refer to the [LICENSE](./LICENSE) file for the full terms.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+<div align="center">
+    <p><strong>Built with ❤️ for developers who want to enhance their AI-assisted development workflows</strong></p>
+</div>

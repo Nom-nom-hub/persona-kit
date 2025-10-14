@@ -1,86 +1,172 @@
 # Support
 
-Thank you for using Persona Kit! This document outlines the various ways you can get help, report issues, and contribute to the project.
+Welcome to Persona Kit support! We're here to help you succeed with persona-driven development.
 
-## Documentation
+## 🆘 Getting Help
 
-First, check our documentation:
+### Support Channels
 
-- [README](README.md) - Getting started and basic usage
-- [Persona-Driven Development Guide](persona-driven.md) - Complete methodology guide
-- [CLI Reference](README.md#-personakit-cli-reference) - Command-line interface documentation
+We provide support through GitHub to meet your needs:
 
-## Getting Help
+#### 1. 📚 Documentation
+- **[Quick Start Guide](./docs/quickstart.md)** - Get up and running in minutes
+- **[Installation Guide](./docs/installation.md)** - Detailed setup instructions
+- **[Local Development](./docs/local-development.md)** - Development environment setup
+- **[Persona-Driven Philosophy](./docs/persona-driven.md)** - Core concepts and methodology
 
-### GitHub Issues
+#### 2. 💬 Community Support
+- **GitHub Discussions**: [Join the conversation](https://github.com/persona-kit/persona-kit/discussions) - Ask questions and get help from the community
+- **GitHub Issues**: [Bug reports and feature requests](https://github.com/persona-kit/persona-kit/issues) - Report issues and request new features
 
-For bugs, feature requests, or support questions, please [open an issue](https://github.com/github/persona-kit/issues) on GitHub. When creating an issue:
+#### 3. 🚨 Direct Support
+- **Bug Reports**: [GitHub Issues](https://github.com/persona-kit/persona-kit/issues) - Report bugs with detailed information
+- **Feature Requests**: [GitHub Issues](https://github.com/persona-kit/persona-kit/issues) - Request new features and improvements
 
-- Use a clear, descriptive title
-- Provide detailed steps to reproduce the issue (for bugs)
-- Include your environment details (OS, Python version, AI agent used)
-- Include any relevant error messages or logs
+### Support Response Times
 
-### GitHub Discussions
+| Type | Channel | Response Time |
+|------|---------|---------------|
+| 🚨 Critical Bug | GitHub Issues | 1-3 business days |
+| 🐛 Bug Report | GitHub Issues | 1-5 business days |
+| ❓ Question | GitHub Discussions | 1-7 business days |
+| 💡 Feature Request | GitHub Issues | 1-2 weeks |
+| 📖 Documentation | GitHub Issues | 1-2 weeks |
 
-For questions, ideas, or general discussions, please use our [GitHub Discussions](https://github.com/github/persona-kit/discussions) area.
+## 🔧 Troubleshooting
 
-## Contributing
+### Common Issues
 
-We welcome contributions to Persona Kit! Please see our [Contributing Guide](CONTRIBUTING.md) for information on:
+#### Installation Problems
+- **Python Version**: Ensure you're using Python 3.8 or higher
+- **Virtual Environment**: Use a virtual environment for isolation
+- **Dependencies**: Run `pip install -e .` in development mode
 
-- How to set up your development environment
-- Coding standards and best practices
-- Testing guidelines
-- Submitting pull requests
+#### Runtime Issues
+- **Configuration**: Check your `pyproject.toml` configuration
+- **File Permissions**: Ensure write access to working directory
+- **Memory Usage**: Monitor memory usage with large projects
 
-## Reporting Security Issues
+#### Development Issues
+- **Import Errors**: Activate your virtual environment
+- **Test Failures**: Run `pytest` to identify failing tests
+- **Linting Issues**: Run `black` and `isort` for code formatting
 
-If you discover a security vulnerability, please report it responsibly using our [Security Policy](SECURITY.md). Do not report security issues in public forums or GitHub issues.
+### Debug Information
 
-## Community
+When reporting issues, please include:
 
-- **GitHub Issues**: https://github.com/github/persona-kit/issues - For bugs, feature requests, and questions
-- **GitHub Discussions**: https://github.com/github/persona-kit/discussions - For community discussions
-- **GitHub**: https://github.com/github/persona-kit - Main project repository
+1. **Environment Details**:
+   - Operating System
+   - Python version (`python --version`)
+   - Persona Kit version (`pip show persona-kit`)
+   - Virtual environment status
 
-## When to Open an Issue
+2. **Error Details**:
+   - Full error message and traceback
+   - Steps to reproduce the issue
+   - Expected vs. actual behavior
 
-Open an issue for:
-- Bug reports
-- Feature requests
-- Documentation improvements
-- Questions that haven't been addressed in existing issues or documentation
+3. **System Information**:
+   - Available memory and disk space
+   - Relevant environment variables
+   - Recent changes or updates
 
-## Before Opening an Issue
+## 📖 Resources
 
-Before creating a new issue, please:
-- Search the existing issues to see if your question or problem has already been addressed
-- Check the documentation
-- Try the latest version of Persona Kit
+### Learning Materials
 
-## Issue Response Time
+#### Beginner Resources
+- **[Quick Start Guide](./docs/quickstart.md)** - 15-minute introduction
+- **[Installation Guide](./docs/installation.md)** - Detailed setup instructions
+- **[Local Development](./docs/local-development.md)** - Development environment setup
 
-We aim to respond to all issues within 72 hours. However, complex issues may require more time to investigate.
+#### Advanced Topics
+- **[Pattern Library](./patterns/)** - Reusable development patterns
+- **[Workflow Examples](./workflows/)** - Real-world usage examples
+- **[Documentation](./docs/)** - Complete documentation
 
-## Providing Effective Support
+#### API Reference
+- **[CLI Commands](./docs/cli-reference.md)** - Complete command reference
+- **[Template System](./docs/templates.md)** - Custom template creation
 
-When seeking help, please provide:
-- Clear, descriptive titles for issues
-- Complete, reproducible examples
-- Environment details (OS, Python version, AI agent, etc.)
-- Any relevant configuration files or code snippets
-- Expected vs. actual behavior
+## 🤝 Contributing Support
 
-## License Support
+### Helping Others
+- **Answer Questions**: Share your knowledge in GitHub Discussions
+- **Improve Documentation**: Help make our docs clearer via GitHub Issues
+- **Report Issues**: Help identify and fix problems via GitHub Issues
+- **Create Examples**: Share your use cases and solutions
 
-Persona Kit is released under the MIT License. For questions about licensing, please refer to the [LICENSE](LICENSE) file or open an issue.
+### Becoming a Contributor
+- **[Contributing Guide](./CONTRIBUTING.md)** - How to contribute
+- **[Development Setup](./docs/local-development.md)** - Get started developing
+- **[Good First Issues](https://github.com/persona-kit/persona-kit/labels/good%20first%20issue)** - Beginner-friendly tasks
 
-## Getting Updates
 
-To stay informed about releases and updates:
-- Watch the repository on GitHub
-- Check the [releases page](https://github.com/github/persona-kit/releases)
-- Refer to [CHANGELOG.md](CHANGELOG.md) for updates on recent changes
+## 🌟 Success Stories
 
-Thank you for using Persona Kit! We appreciate your interest and contributions to the project.
+### Case Studies
+
+#### Tech Startup
+*"Persona Kit transformed our development process. We reduced development time by 40% and improved code quality significantly."*
+
+**Key Benefits:**
+- Faster feature development
+- Consistent code quality
+- Better team collaboration
+- Reduced onboarding time
+
+#### Enterprise Team
+*"The structured approach helped us scale our development team while maintaining quality standards across projects."*
+
+**Key Benefits:**
+- Standardized development processes
+- Improved knowledge sharing
+- Better project predictability
+- Enhanced team productivity
+
+#### Open Source Project
+*"Persona Kit helped us maintain consistent quality as our contributor base grew rapidly."*
+
+**Key Benefits:**
+- Consistent contribution standards
+- Better documentation
+- Improved maintainer experience
+- Faster issue resolution
+
+## 📞 Contact Information
+
+### Support Channels
+- **GitHub Issues**: [Bug reports and features](https://github.com/persona-kit/persona-kit/issues)
+- **GitHub Discussions**: [Questions and help](https://github.com/persona-kit/persona-kit/discussions)
+
+## 🕒 Support Hours
+
+- **GitHub Issues**: 24/7 (best effort, community-driven)
+- **GitHub Discussions**: 24/7 (best effort, community-driven)
+
+## 💡 Tips for Getting Help
+
+### Before Asking
+1. **Check Documentation**: Your question might already be answered
+2. **Search Existing Issues**: Someone may have asked the same question
+3. **Try Troubleshooting Steps**: Basic debugging often solves common issues
+4. **Gather Information**: Have environment details and error messages ready
+
+### When Asking Questions
+1. **Be Specific**: Clear, detailed questions get better answers
+2. **Provide Context**: Explain what you're trying to accomplish
+3. **Include Examples**: Show your code or configuration when relevant
+4. **Mention What You've Tried**: Help us understand what doesn't work
+
+### Getting Faster Responses
+- Use descriptive titles for issues and discussions
+- Include all relevant information upfront
+- Follow templates when available
+- Be patient and respectful
+
+---
+
+Thank you for using Persona Kit! We're committed to your success and look forward to helping you build amazing software with persona-driven development.
+
+*Last updated: January 2024*

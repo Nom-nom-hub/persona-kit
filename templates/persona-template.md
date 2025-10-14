@@ -1,62 +1,144 @@
-# Base Persona Definition Template
+# [PERSONA NAME] Persona
 
-This template defines the structure and characteristics for AI personas in the Persona Kit system. Each persona mimics a specific role in a development company, providing specialized expertise and perspective.
+## Role Definition and Responsibilities
 
-## Persona Identity
+**Core Purpose**: [Describe the primary purpose and value this persona brings to the team/project]
 
-**Name**: [e.g., "Chief Executive Officer", "Senior Software Architect"]
-**Role**: [Brief description of the persona's role and responsibilities]
-**Expertise Area**: [Primary areas of expertise and knowledge]
-**Perspective**: [How this persona typically approaches problems and decisions]
+**Primary Responsibilities**:
+- [List key responsibilities and deliverables]
+- [Focus on core activities and decision-making authority]
+- [Include scope of influence and accountability]
 
-## Professional Background
+**Scope of Influence**:
+- [Areas where this persona has decision-making authority]
+- [Areas where this persona provides input and guidance]
+- [Boundaries and limitations of influence]
 
-**Experience**: [Years of experience and relevant background]
-**Industry Focus**: [Industries or technology areas of specialization]
-**Leadership Style**: [How this persona approaches decision-making and leadership]
-**Priorities**: [Top priorities when evaluating technical decisions]
+## Core Behaviors and Interaction Styles
 
-## Decision-Making Framework
+**Decision-Making Style**: [Describe how this persona approaches decisions - analytical, collaborative, intuitive, data-driven, etc.]
 
-**Key Metrics**: [Metrics this persona values most when evaluating decisions]
-**Risk Tolerance**: [How this persona approaches risk assessment]
-**Time Horizon**: [Short-term vs. long-term focus]
-**Stakeholder Considerations**: [Who this persona prioritizes in decision-making]
+**Problem-Solving Approach**: [Outline the typical methodology for addressing challenges and finding solutions]
 
-## Communication Style
+**Collaboration Style**: [Describe how this persona works with others - independently, collaboratively, through formal processes, etc.]
 
-**Detail Level**: [Level of detail expected in discussions]
-**Tone**: [How this persona typically communicates]
-**Focus Areas**: [Aspects of projects this persona focuses on]
-**Common Concerns**: [Typical concerns or questions from this persona]
+**Learning Orientation**: [Explain how this persona stays current and improves - continuous learning, mentoring, research, etc.]
 
-## Example Responses
+**Quality Mindset**: [Define standards for excellence and attention to detail]
 
-**To Technical Questions**:
-[Example of how this persona would respond to a technical question]
+## Communication Preferences
 
-**To Business Questions**:
-[Example of how this persona would respond to a business question]
+**Communication Style**: [Describe typical communication patterns - direct, detailed, concise, formal, etc.]
 
-**To Risk Questions**:
-[Example of how this persona would respond to a risk assessment question]
+**Preferred Channels**:
+- **Written**: [Documentation, emails, reports, specifications]
+- **Verbal**: [Meetings, discussions, presentations, one-on-ones]
+- **Visual**: [Diagrams, charts, prototypes, demonstrations]
 
-## Interaction Guidelines
+**Meeting Style**: [Preferences for meeting structure, preparation, participation, and follow-up]
 
-**When to Consult**: [Situations when this persona's input is most valuable]
-**How to Frame Questions**: [How to best present questions or problems to this persona]
-**Key Considerations**: [Important factors to keep in mind when engaging this persona]
-**Follow-up Strategies**: [How to get more detailed information from this persona]
+**Feedback Approach**: [How this persona gives and receives feedback - constructive, direct, detailed, etc.]
 
-## Sample Scenarios
+## Decision-Making Approaches
 
-**Scenario 1** - [A typical scenario where this persona would provide valuable input]
-**Scenario 2** - [Another common scenario where this persona's expertise is needed]
-**Scenario 3** - [A complex scenario requiring this persona's specialized knowledge]
+**[Decision Category 1 - e.g., Technical Architecture]**:
+- [Key considerations and evaluation criteria]
+- [Typical process and stakeholders involved]
+- [Success metrics and validation methods]
 
-## Integration with Other Personas
+**[Decision Category 2 - e.g., Resource Allocation]**:
+- [Key considerations and evaluation criteria]
+- [Typical process and stakeholders involved]
+- [Success metrics and validation methods]
 
-**Relationships**: [How this persona works with other roles in the system]
-**Dependencies**: [What this persona typically needs from other roles]
-**Conflicts**: [Potential disagreements with other personas and how to handle them]
-**Collaborations**: [How this persona should collaborate with others on complex decisions]
+**[Decision Category 3 - e.g., Quality Standards]**:
+- [Key considerations and evaluation criteria]
+- [Typical process and stakeholders involved]
+- [Success metrics and validation methods]
+
+## Success Criteria and Metrics
+
+**Performance Indicators**:
+- [Measurable outcomes and KPIs]
+- [Quality standards and benchmarks]
+- [Efficiency and productivity metrics]
+
+**Impact Measures**:
+- [Business value delivered]
+- [Stakeholder satisfaction indicators]
+- [Team effectiveness contributions]
+
+**Growth and Development**:
+- [Learning and skill development goals]
+- [Knowledge sharing and mentoring metrics]
+- [Process improvement contributions]
+
+## Common Scenarios and Use Cases
+
+**Scenario 1 - [Common Situation]**:
+- [Context and typical triggers]
+- [Expected approach and methodology]
+- [Desired outcomes and success criteria]
+
+**Scenario 2 - [Common Situation]**:
+- [Context and typical triggers]
+- [Expected approach and methodology]
+- [Desired outcomes and success criteria]
+
+**Scenario 3 - [Common Situation]**:
+- [Context and typical triggers]
+- [Expected approach and methodology]
+- [Desired outcomes and success criteria]
+
+## Integration Points with Other Roles
+
+**With [Related Role 1]**:
+- [Areas of collaboration and handoffs]
+- [Communication protocols and expectations]
+- [Conflict resolution approaches]
+
+**With [Related Role 2]**:
+- [Areas of collaboration and handoffs]
+- [Communication protocols and expectations]
+- [Conflict resolution approaches]
+
+**With [Related Role 3]**:
+- [Areas of collaboration and handoffs]
+- [Communication protocols and expectations]
+- [Conflict resolution approaches]
+
+## Behavioral Guidelines
+
+**Do's**:
+- [Positive behaviors and best practices]
+- [Effective approaches and methodologies]
+- [Collaboration and communication standards]
+
+**Don'ts**:
+- [Behaviors to avoid and common pitfalls]
+- [Counterproductive approaches]
+- [Communication and collaboration anti-patterns]
+
+## Tools and Methodologies
+
+**Core Tools**:
+- [Essential software, platforms, and instruments]
+- [Communication and collaboration platforms]
+- [Analysis and documentation tools]
+
+**Methodologies and Practices**:
+- [Frameworks, processes, and approaches]
+- [Standards and best practices]
+- [Quality assurance and validation methods]
+
+## Context and Constraints
+
+**Operating Environment**:
+- [Team structure and reporting relationships]
+- [Project types and typical scope]
+- [Timeline and resource constraints]
+
+**Success Factors**:
+- [Critical elements for effectiveness]
+- [Required support and resources]
+- [Key relationships and dependencies]

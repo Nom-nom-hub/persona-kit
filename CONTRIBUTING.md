@@ -1,117 +1,312 @@
 # Contributing to Persona Kit
 
-We welcome contributions to Persona Kit! This document provides guidelines and information to help you contribute effectively.
+Thank you for your interest in contributing to Persona Kit! We welcome contributions from everyone, regardless of your experience level. This document will help you get started.
 
-## Code of Conduct
+## 🚀 Quick Start
 
-By participating in this project, you agree to abide by our [Code of Conduct](CODE_OF_CONDUCT.md). Please read it before contributing.
+1. **Fork** the repository on GitHub
+2. **Clone** your fork locally
+3. **Set up** your development environment
+4. **Make** your changes
+5. **Test** your changes
+6. **Submit** a pull request
 
-## Getting Started
+## 📋 Development Process
+
+We use a structured development process based on our persona-driven methodology:
+
+### 1. 📋 Constitution - Understand the Project
+
+Before contributing, please read:
+- [README.md](./README.md) - Project overview and setup
+- [docs/persona-driven.md](./docs/persona-driven.md) - Core philosophy
+- [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) - Community guidelines
+
+### 2. 🎭 Choose Your Persona
+
+When contributing, consider which persona aligns with your contribution:
+
+- **🔧 Developer**: Code changes, bug fixes, new features
+- **🎨 Designer**: UI/UX improvements, documentation formatting
+- **📊 Product Manager**: Feature requests, user experience improvements
+- **🧪 QA Engineer**: Testing, quality assurance, documentation
+- **🏗️ Architect**: System design, performance improvements
+
+### 3. 🔄 Follow Our Patterns
+
+We encourage contributors to follow our established patterns:
+- Use existing templates when possible
+- Follow the coding standards and style guides
+- Write clear commit messages
+- Update documentation for any changes
+
+## 🛠️ Development Setup
 
 ### Prerequisites
 
-- Python 3.11+
-- Git
-- [uv](https://docs.astral.sh/uv/) for package management
+- **Python 3.8+**
+- **Git**
+- **Make** (optional, for using Makefile commands)
+- **Virtual environment tool** (venv, conda, etc.)
 
-### Setting Up Your Development Environment
+### Local Development Environment
 
-1. Fork the repository on GitHub
-2. Clone your fork locally:
+1. **Clone the repository:**
    ```bash
-   git clone https://github.com/YOUR-USERNAME/persona-kit.git
+   git clone https://github.com/your-username/persona-kit.git
    cd persona-kit
    ```
 
-3. Create a virtual environment and install dependencies:
+2. **Set up virtual environment:**
    ```bash
-   uv venv
-   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-   uv pip install -e .
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
-4. Create a branch for your changes:
+3. **Install dependencies:**
    ```bash
-   git checkout -b feature/your-feature-name
+   pip install -e .
    ```
 
-## How to Contribute
+4. **Set up pre-commit hooks:**
+   ```bash
+   pip install pre-commit
+   pre-commit install
+   ```
 
-### Reporting Issues
+5. **Run tests:**
+   ```bash
+   pytest
+   ```
 
-- Use the issue tracker to report bugs or suggest features
-- Check existing issues before creating a new one
-- Provide detailed information to help us understand and reproduce the issue
+### Project Structure
 
-### Submitting Changes
-
-1. Make your changes in your feature branch
-2. Test your changes thoroughly
-3. Update documentation as needed
-4. Commit your changes with clear, descriptive commit messages
-5. Push your changes to your fork
-6. Submit a pull request to the main repository
-
-### Pull Request Guidelines
-
-- Keep pull requests focused on a single feature or bug fix
-- Follow the existing code style and conventions
-- Include tests for new functionality
-- Update documentation as needed
-- Ensure all tests pass before submitting
-
-## Development Process
-
-### Testing
-
-Before submitting your changes, ensure all tests pass:
-
-```bash
-# Run tests
-uv run pytest
-
-# Run linters
-uv run ruff check .
-uv run black --check .
+```
+persona-kit/
+├── src/                    # Source code
+│   └── persona_kit_cli/   # Main CLI package
+├── docs/                  # Documentation
+├── templates/             # Template files
+├── scripts/               # Development scripts
+├── tests/                 # Test files
+├── workflows/             # Workflow definitions
+├── personas/              # Persona definitions
+├── patterns/              # Pattern definitions
+└── memory/                # Memory templates
 ```
 
-### Code Style
+## 🔧 Making Changes
 
-We follow Python's PEP 8 style guide. Use `black` for code formatting and `ruff` for linting:
+### Code Contributions
+
+1. **Create a feature branch:**
+   ```bash
+   git checkout -b feature/amazing-feature
+   ```
+
+2. **Make your changes:**
+   - Follow PEP 8 style guidelines
+   - Add tests for new functionality
+   - Update documentation as needed
+   - Ensure all tests pass
+
+3. **Commit your changes:**
+   ```bash
+   git add .
+   git commit -m "Add amazing feature"
+   ```
+
+4. **Push to your fork:**
+   ```bash
+   git push origin feature/amazing-feature
+   ```
+
+### Documentation Contributions
+
+- Use Markdown format
+- Follow existing documentation structure
+- Include examples where helpful
+- Update related documentation when making changes
+
+### Template Contributions
+
+- Follow existing template patterns
+- Test templates with various inputs
+- Include clear documentation for template usage
+- Consider edge cases and error conditions
+
+## ✅ Testing
+
+### Running Tests
 
 ```bash
-# Format code
-uv run black .
+# Run all tests
+pytest
 
-# Check for linting issues
-uv run ruff check .
+# Run specific test file
+pytest tests/test_specific.py
+
+# Run with coverage
+pytest --cov=src
+
+# Run with verbose output
+pytest -v
 ```
 
-## Project Structure
+### Writing Tests
 
-- `src/personakit_cli/` - Main CLI implementation
-- `templates/` - Template files for persona-driven development
-- `scripts/` - Cross-platform automation scripts (bash and PowerShell)
-- `memory/` - Default memory files like constitution
-- `docs/` - Documentation files
-- `tests/` - Test files
+- Use descriptive test names
+- Test both happy path and edge cases
+- Mock external dependencies
+- Follow AAA pattern (Arrange, Act, Assert)
 
-## Adding New Personas
+Example test structure:
+```python
+def test_feature_functionality():
+    # Arrange
+    setup_test_data()
 
-To add a new persona:
+    # Act
+    result = function_under_test()
 
-1. Create a command template in `templates/commands/`
-2. Update the CLI code in `src/personakit_cli/__init__.py` to include the new command
-3. Add appropriate documentation in README.md
-4. Update the agent file template if needed
+    # Assert
+    assert result == expected_value
+```
 
-## Community
+## 📝 Documentation
 
-- Join the conversation in our GitHub Discussions
-- Report security issues following our [Security Policy](SECURITY.md)
+### Building Documentation
 
-## Questions?
+```bash
+# Install documentation dependencies
+pip install -r docs/requirements.txt
 
-If you have questions about contributing, feel free to open an issue for clarification.
+# Build HTML documentation
+cd docs
+docfx build
+```
 
-Thank you for contributing to Persona Kit!
+### Documentation Guidelines
+
+- Use clear, concise language
+- Include code examples where helpful
+- Keep instructions up to date
+- Use consistent formatting
+
+## 🔀 Submitting Pull Requests
+
+### Before Submitting
+
+- [ ] All tests pass
+- [ ] Code follows style guidelines
+- [ ] Documentation is updated
+- [ ] Commit messages are clear
+- [ ] Branch is up to date with main
+
+### Pull Request Process
+
+1. **Create a pull request** from your feature branch
+2. **Fill out the template** with clear description
+3. **Reference related issues** if applicable
+4. **Request review** from maintainers
+5. **Respond to feedback** and make necessary changes
+6. **Wait for approval** and merge
+
+### Pull Request Template
+
+```
+## Description
+Brief description of changes
+
+## Related Issues
+Closes #123
+
+## Changes Made
+- Change 1
+- Change 2
+- Change 3
+
+## Testing
+- Test case 1
+- Test case 2
+
+## Documentation
+- Updated docs/file.md
+- Added examples in docs/examples/
+```
+
+## 🚨 Reporting Issues
+
+### Bug Reports
+
+When reporting bugs, please include:
+
+- **Description**: Clear description of the issue
+- **Steps to Reproduce**: Step-by-step instructions
+- **Expected Behavior**: What should happen
+- **Actual Behavior**: What actually happens
+- **Environment**: OS, Python version, etc.
+- **Additional Context**: Screenshots, error messages, etc.
+
+### Feature Requests
+
+When requesting features, please include:
+
+- **Problem Statement**: What problem does this solve?
+- **Proposed Solution**: How should it work?
+- **Alternatives Considered**: Other approaches you've considered
+- **Additional Context**: Use cases, examples, etc.
+
+## 💬 Communication
+
+### Getting Help
+
+- **GitHub Issues**: For bug reports and feature requests
+- **Discussions**: For questions and discussions
+- **Email**: For private inquiries
+
+### Community Guidelines
+
+- Be respectful and inclusive
+- Use welcoming and inclusive language
+- Be collaborative
+- Focus on what is best for the community
+- Show empathy towards other community members
+
+## 🎯 Contribution Ideas
+
+Looking for ways to contribute? Here are some suggestions:
+
+### For Beginners
+- Fix typos in documentation
+- Improve error messages
+- Add missing test cases
+- Update outdated documentation
+
+### For Experienced Contributors
+- Implement new CLI commands
+- Add new persona templates
+- Improve performance
+- Enhance the plugin system
+
+### For Experts
+- Core architecture improvements
+- New workflow patterns
+- Advanced memory management features
+- Integration with other tools
+
+## 🔒 Security
+
+If you discover a security vulnerability, please follow our [Security Policy](./SECURITY.md) instead of opening a public issue.
+
+## 📜 License
+
+By contributing, you agree that your contributions will be licensed under the same license as the original project.
+
+## 🙏 Acknowledgments
+
+Thank you for contributing to Persona Kit! Your contributions help make AI-driven development more accessible and effective for everyone.
+
+---
+
+*This contributing guide is inspired by open-source best practices and the [Contributor Covenant](https://www.contributor-covenant.org/).*

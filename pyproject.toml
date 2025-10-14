@@ -1,23 +1,42 @@
 [project]
-name = "personakit-cli"
-version = "0.0.1"
-description = "Persona Kit CLI, part of Persona Kit. A tool to bootstrap your projects with AI personas that mimic a full development company."
+name = "persona-kit"
+version = "0.1.0"
+description = "A toolkit for persona-driven development workflows and AI agent management."
 requires-python = ">=3.11"
 dependencies = [
     "typer",
     "rich",
-    "httpx[socks]",
     "platformdirs",
-    "readchar",
-    "truststore>=0.10.4",
+    "pyyaml",
+    "jinja2",
 ]
 
 [project.scripts]
-personakit = "personakit_cli:main"
+personakit = "src.persona_kit_cli:main"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/personakit_cli"]
+packages = ["src/persona_kit_cli"]
+
+[tool.persona-kit]
+description = "A toolkit for persona-driven development workflows and AI agent management."
+version = "0.1.0"
+authors = ["Nom-nom-hub"]
+repository = "https://github.com/Nom-nom-hub/persona-kit"
+homepage = "https://github.com/Nom-nom-hub/persona-kit"
+documentation = "https://github.com/Nom-nom-hub/persona-kit#readme"
+keywords = ["persona", "ai", "development", "workflow", "cli"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: User Interfaces",
+]

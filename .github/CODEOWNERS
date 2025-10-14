@@ -1,0 +1,11 @@
+# Global code owner for nom-nom-hub organization
+* @nom-nom-hub
+
+# Specific owners for different parts of the codebase
+/src/ @nom-nom-hub
+/persona-kit/ @nom-nom-hub
+/docs/ @nom-nom-hub
+/.github/ @nom-nom-hub
+
+# Python packaging
+/pyproject.toml @nom-nom-hub

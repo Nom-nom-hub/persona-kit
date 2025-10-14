@@ -1,0 +1,39 @@
+# Home page
+- name: Home
+  href: index.md
+
+# Getting started section
+- name: Getting Started
+  items:
+    - name: Installation
+      href: installation.md
+    - name: Quick Start
+      href: quickstart.md
+
+# Core concepts
+- name: Core Concepts
+  items:
+    - name: Persona-Driven Development
+      href: persona-driven.md
+
+# Development workflows
+- name: Development
+  items:
+    - name: Local Development
+      href: local-development.md
+
+# Advanced topics
+- name: Advanced Topics
+  items:
+    - name: 5-Step Workflow
+      href: workflow-guide.md
+    - name: Template System
+      href: templates.md
+    - name: CLI Usage
+      href: cli-guide.md
+    - name: AI Agent Integration
+      href: agent-integration.md
+    - name: Best Practices
+      href: best-practices.md
+    - name: Migration Guide
+      href: migration.md
