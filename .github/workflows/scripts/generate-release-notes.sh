@@ -65,18 +65,57 @@ if [ -z "$RELEASE_NOTES" ]; then
     echo "Could not extract release notes from CHANGELOG.md, generating from git history..."
 
     # Get commit history since last version
-    if [ -n "$PREVIOUS_VERSION" ] && git tag --list | grep -q "^v${PREVIOUS_VERSION}$"; then
-        echo "Found previous version tag v${PREVIOUS_VERSION}, using it as reference"
-        SINCE_TAG="v${PREVIOUS_VERSION}"
-    elif [ -n "$PREVIOUS_VERSION" ]; then
-        echo "Previous version tag v${PREVIOUS_VERSION} not found, looking for latest tag"
-        LATEST_TAG=$(git tag --sort=-version:refname | head -n 1)
-        if [ -n "$LATEST_TAG" ]; then
-            echo "Using latest tag: $LATEST_TAG"
-            SINCE_TAG="$LATEST_TAG"
+    if [ -n "$PREVIOUS_VERSION" ]; then
+        # Check if the previous version parameter already includes 'v' prefix
+        if [[ "${PREVIOUS_VERSION}" == v* ]]; then
+            # PREVIOUS_VERSION already has 'v' prefix, check if tag exists with 'v'
+            if git tag --list | grep -q "^${PREVIOUS_VERSION}$"; then
+                echo "Found previous version tag ${PREVIOUS_VERSION}, using it as reference"
+                SINCE_TAG="${PREVIOUS_VERSION}"
+            else
+                # Tag with 'v' prefix doesn't exist, look for version without 'v'
+                STRIPPED_PREV="${PREVIOUS_VERSION#v}"
+                if git tag --list | grep -q "^${STRIPPED_PREV}$"; then
+                    echo "Found previous version tag ${STRIPPED_PREV}, using it as reference"
+                    SINCE_TAG="${STRIPPED_PREV}"
+                else
+                    # Check if both 'vX.Y.Z' and 'X.Y.Z' format tags exist for warning
+                    STRIPPED_PREV="${PREVIOUS_VERSION#v}"
+                    if git tag --list | grep -q "^${STRIPPED_PREV}$" && git tag --list | grep -q "^v${STRIPPED_PREV}$"; then
+                        echo "WARNING: Both formats of tag exist: '${STRIPPED_PREV}' and 'v${STRIPPED_PREV}', using unambiguous detection method"
+                    fi
+                    echo "Previous version tag ${PREVIOUS_VERSION} not found, looking for latest tag"
+                    LATEST_TAG=$(git tag --sort=-version:refname | head -n 1)
+                    if [ -n "$LATEST_TAG" ]; then
+                        echo "Using latest tag: $LATEST_TAG"
+                        SINCE_TAG="$LATEST_TAG"
+                    else
+                        FALLBACK_COMMIT_RANGE="${FALLBACK_COMMIT_RANGE:-HEAD~10}"
+                        echo "No tags found, using fallback commit range: ${FALLBACK_COMMIT_RANGE}"
+                        echo "WARNING: Fallback range may miss changes in repositories with infrequent tags or large merges. Consider setting FALLBACK_COMMIT_RANGE to adjust."
+                        SINCE_TAG="${FALLBACK_COMMIT_RANGE}"
+                    fi
+                fi
+            fi
         else
-            echo "No tags found, using last 10 commits"
-            SINCE_TAG="HEAD~10"
+            # PREVIOUS_VERSION doesn't have 'v' prefix, check both with and without
+            if git tag --list | grep -q "^v${PREVIOUS_VERSION}$"; then
+                echo "Found previous version tag v${PREVIOUS_VERSION}, using it as reference"
+                SINCE_TAG="v${PREVIOUS_VERSION}"
+            elif git tag --list | grep -q "^${PREVIOUS_VERSION}$"; then
+                echo "Found previous version tag ${PREVIOUS_VERSION}, using it as reference"
+                SINCE_TAG="${PREVIOUS_VERSION}"
+            else
+                echo "Previous version tag ${PREVIOUS_VERSION} not found, looking for latest tag"
+                LATEST_TAG=$(git tag --sort=-version:refname | head -n 1)
+                if [ -n "$LATEST_TAG" ]; then
+                    echo "Using latest tag: $LATEST_TAG"
+                    SINCE_TAG="$LATEST_TAG"
+                else
+                    echo "No tags found, using last 10 commits"
+                    SINCE_TAG="HEAD~10"
+                fi
+            fi
         fi
     else
         echo "No previous version specified, using last 10 commits"

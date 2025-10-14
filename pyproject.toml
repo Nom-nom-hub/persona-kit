@@ -9,6 +9,9 @@ dependencies = [
     "platformdirs",
     "pyyaml",
     "jinja2",
+    "httpx",
+    "readchar",
+    "truststore",
 ]
 
 [project.scripts]
