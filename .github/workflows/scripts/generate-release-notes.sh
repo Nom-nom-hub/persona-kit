@@ -160,6 +160,15 @@ EOF
 EOF
 fi
 
+# Add the recommended release information at the beginning of the file
+TEMP_FILE=$(mktemp)
+echo "# Releases" > "$TEMP_FILE"
+echo "" >> "$TEMP_FILE"
+echo "This is the latest set of releases that you can use with your agent of choice. We recommend using the Persona Kit CLI to scaffold your projects, however you can download these independently and manage them yourself." >> "$TEMP_FILE"
+echo "" >> "$TEMP_FILE"
+cat release_notes.md >> "$TEMP_FILE"
+mv "$TEMP_FILE" release_notes.md
+
 # Display generated release notes
 echo "Generated release notes:"
 echo "=========================="
