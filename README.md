@@ -243,6 +243,20 @@ Additional commands for enhanced multi-perspective development:
 | `/personakit.role-play` | Simulate a team meeting with different personas providing input       |
 | `/personakit.guidance-check` | Validate decisions against multiple persona viewpoints         |
 
+#### Persona-Driven Development Workflow Commands
+
+Complete development workflow commands for persona-driven development:
+
+| Command              | Description                                                           |
+|----------------------|-----------------------------------------------------------------------|
+| `/personakit.specify` | Create or update feature specification from a natural language description |
+| `/personakit.plan`   | Create implementation plan with technology choices and architecture  |
+| `/personakit.clarify` | Clarify underspecified areas before planning (recommended before `/personakit.plan`) |
+| `/personakit.analyze` | Cross-artifact consistency and coverage analysis (run after `/personakit.tasks`, before `/personakit.implement`) |
+| `/personakit.tasks`  | Generate actionable development tasks from the implementation plan   |
+| `/personakit.checklist` | Generate custom quality checklists for validation |
+| `/personakit.implement` | Execute development tasks to build the feature according to plan and spec |
+
 ### Environment Variables
 
 | Variable         | Description                                                                                    |
