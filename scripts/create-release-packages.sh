@@ -1,61 +1,32 @@
 #!/bin/bash
 
-# create-release-packages.sh - Generate multiple package formats for persona-kit
-# Usage: ./create-release-packages.sh [version]
+# create-release-packages.sh - Create release packages for persona-kit
+# Usage: ./create-release-packages.sh <version>
+# Creates template packages for each AI assistant and script type
 
 set -euo pipefail
 
-VERSION=${1:-}
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 <version>"
+    exit 1
+fi
+
+VERSION=$1
+
+# Enable debug mode if DEBUG environment variable is set
+if [ "${DEBUG:-false}" = "true" ]; then
+    set -x
+fi
 
 echo "Creating release packages for persona-kit v${VERSION}..."
 
 # Ensure we're in the project root
 cd "$(git rev-parse --show-toplevel)"
 
-# Clean any existing dist directory - try multiple approaches for Windows compatibility
-if [ -d "dist" ]; then
-    echo "Cleaning existing dist directory..."
-    # Try Unix rm first
-    rm -rf dist 2>/dev/null || true
-    # If that fails, try Windows rmdir
-    if [ -d "dist" ]; then
-        rmdir /s /q dist 2>/dev/null || true
-    fi
-    # Check if it still exists
-    if [ -d "dist" ]; then
-        echo "Warning: Could not remove existing dist directory, will try to continue..."
-    fi
-fi
+# Create dist directory if it doesn't exist
+DIST_DIR="dist"
+mkdir -p "$DIST_DIR"
 
-# Create dist directory and set DIST_DIR to absolute path
-mkdir -p dist 2>/dev/null || mkdir dist 2>/dev/null || echo "Warning: Could not create dist directory, may already exist"
-DIST_DIR="$(pwd)/dist"
-
-# Convert to Windows path format if on Windows (for Git Bash)
-if command -v cygpath &> /dev/null; then
-    DIST_DIR_WIN="$(cygpath -w "$DIST_DIR")"
-    echo "Windows path for dist directory: $DIST_DIR_WIN"
-fi
-
-echo "Using dist directory: $DIST_DIR"
-
-# Install build dependencies if not already installed
-if ! command -v python &> /dev/null; then
-    echo "Error: Python is not installed or not in PATH"
-    exit 1
-fi
-
-# Check if build package is installed
-if ! python -c "import build" &> /dev/null; then
-    echo "Installing build package..."
-    python -m pip install build
-fi
-
-# Build source distribution (sdist) and wheel
-echo "Building source distribution and wheel..."
-python -m build
-
-# Now create the AI assistant template packages
 # List of supported AI assistants
 AI_ASSISTANTS=("copilot" "claude" "gemini" "cursor-agent" "qwen" "opencode" "codex" "windsurf" "kilocode" "auggie" "codebuddy" "roo" "q")
 
@@ -64,7 +35,7 @@ SCRIPT_TYPES=("sh" "ps")
 
 # Create a temporary directory for building packages
 TEMP_DIR=$(mktemp -d)
-echo "Building template packages in temporary directory: $TEMP_DIR"
+echo "Building packages in temporary directory: $TEMP_DIR"
 
 # Create .persona-kit directory with full structure
 mkdir -p "$TEMP_DIR/.persona-kit"
@@ -265,11 +236,11 @@ POWERSHELL_EOF
         cp "$TEMP_DIR/.persona-kit/templates/implement-cmd-template.md" "$package_dir/implement-cmd.md" 2>/dev/null || echo "implement-cmd-template.md not found"
         
         # Create the final template package as a ZIP file
-        template_name="persona-kit-template-${assistant}-${script_type}-v${VERSION}.zip"
+        template_name="persona-kit-template-${assistant}-${script_type}.zip"
+        cd "$package_dir"
         
-        # Create the zip package with all files using absolute path
-        (cd "$package_dir" && zip -r "${DIST_DIR}/${template_name}" . -x "*.DS_Store" "*/.*.swp" "*/.*.swo" > /dev/null 2>&1) || \
-        (cd "$package_dir" && tar -czf "${DIST_DIR}/${template_name}" . > /dev/null 2>&1)
+        # Create the zip package with all files
+        zip -r "${DIST_DIR}/${template_name}" . -x "*.DS_Store" "*/.*.swp" "*/.*.swo" > /dev/null 2>&1 || tar -czf "${DIST_DIR}/${template_name}" . > /dev/null 2>&1
         
         echo "Created: $template_name"
     done
@@ -277,45 +248,13 @@ done
 
 # Also create a complete package with all files
 complete_name="persona-kit-complete-${VERSION}.zip"
-# Create the complete package using absolute path
-(cd "$TEMP_DIR" && zip -r "${DIST_DIR}/${complete_name}" . -x "*.DS_Store" "*/.*.swp" "*/.*.swo" > /dev/null 2>&1) || \
-(cd "$TEMP_DIR" && tar -czf "${DIST_DIR}/${complete_name}" . > /dev/null 2>&1)
+cd "$TEMP_DIR"
+zip -r "${DIST_DIR}/${complete_name}" . -x "*.DS_Store" "*/.*.swp" "*/.*.swo" > /dev/null 2>&1 || tar -czf "${DIST_DIR}/${complete_name}" . > /dev/null 2>&1
 
 echo "Created complete package: $complete_name"
 
 # Clean up temporary directory
 rm -rf "$TEMP_DIR"
 
-# Verify packages were created
-if [ ! -d "dist" ]; then
-    echo "Error: dist directory was not created"
-    exit 1
-fi
-
-# List created packages
-echo "Created packages:"
-ls -la dist/
-
-# Generate checksums for all packages
-echo "Generating checksums..."
-(cd dist && \
-if command -v sha256sum &> /dev/null; then
-    sha256sum * > checksums.sha256
-    echo "Created checksums.sha256"
-elif command -v shasum &> /dev/null; then
-    shasum -a 256 * > checksums.sha256
-    echo "Created checksums.sha256"
-else
-    echo "Warning: sha256sum/shasum not available - skipping checksum generation"
-fi)
-
-# List final packages with checksums
-echo "Final release packages:"
-ls -la dist/
-if [ -f "dist/checksums.sha256" ]; then
-    echo "With checksums file"
-    ls -la dist/checksums.sha256
-fi
-
-echo "Package creation completed successfully!"
-echo "Packages ready for upload in: $(pwd)"
+echo "All packages created in $DIST_DIR/"
+ls -la "$DIST_DIR/"
