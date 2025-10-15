@@ -203,32 +203,279 @@ for assistant in "${AI_ASSISTANTS[@]}"; do
         # Create assistant-specific files
         assistant_dir="$package_dir/.${assistant}"
         mkdir -p "$assistant_dir"
+        mkdir -p "$assistant_dir/commands"  # Create commands directory for all assistants
         
         # Create a basic config file for the assistant
         case "$assistant" in
             "claude")
                 echo "# Claude-specific configuration" > "$assistant_dir/config.txt"
                 echo "Claude Code project setup" >> "$assistant_dir/config.txt"
+                # Add basic command TOML files for Claude
+                cat > "$assistant_dir/commands/constitution.toml" << 'TOML_EOF'
+[command]
+name = "/persona-kit.constitution"
+description = "Establish project principles and guidelines"
+
+[parameters]
+none = true
+TOML_EOF
+                cat > "$assistant_dir/commands/personas.toml" << 'TOML_EOF'
+[command]
+name = "/persona-kit.personas"
+description = "Set up team personas for development"
+
+[parameters]
+none = true
+TOML_EOF
+                cat > "$assistant_dir/commands/patterns.toml" << 'TOML_EOF'
+[command]
+name = "/persona-kit.patterns"
+description = "Define communication and development patterns"
+
+[parameters]
+none = true
+TOML_EOF
+                cat > "$assistant_dir/commands/workflows.toml" << 'TOML_EOF'
+[command]
+name = "/persona-kit.workflows"
+description = "Create development workflows"
+
+[parameters]
+none = true
+TOML_EOF
+                cat > "$assistant_dir/commands/implement.toml" << 'TOML_EOF'
+[command]
+name = "/persona-kit.implement"
+description = "Execute implementation phase"
+
+[parameters]
+none = true
+TOML_EOF
                 ;;
             "qwen")
                 echo "# Qwen-specific configuration" > "$assistant_dir/config.txt"
                 echo "Qwen Code project setup" >> "$assistant_dir/config.txt"
+                # Add basic command TOML files for Qwen
+                cat > "$assistant_dir/commands/constitution.toml" << 'TOML_EOF'
+[command]
+name = "/persona-kit.constitution"
+description = "Establish project principles and guidelines"
+
+[parameters]
+none = true
+TOML_EOF
+                cat > "$assistant_dir/commands/personas.toml" << 'TOML_EOF'
+[command]
+name = "/persona-kit.personas"
+description = "Set up team personas for development"
+
+[parameters]
+none = true
+TOML_EOF
+                cat > "$assistant_dir/commands/patterns.toml" << 'TOML_EOF'
+[command]
+name = "/persona-kit.patterns"
+description = "Define communication and development patterns"
+
+[parameters]
+none = true
+TOML_EOF
+                cat > "$assistant_dir/commands/workflows.toml" << 'TOML_EOF'
+[command]
+name = "/persona-kit.workflows"
+description = "Create development workflows"
+
+[parameters]
+none = true
+TOML_EOF
+                cat > "$assistant_dir/commands/implement.toml" << 'TOML_EOF'
+[command]
+name = "/persona-kit.implement"
+description = "Execute implementation phase"
+
+[parameters]
+none = true
+TOML_EOF
                 ;;
             "copilot")
                 echo "# GitHub Copilot-specific configuration" > "$assistant_dir/config.txt"
                 echo "GitHub Copilot project setup" >> "$assistant_dir/config.txt"
+                # Add basic command TOML files for Copilot
+                cat > "$assistant_dir/commands/constitution.toml" << 'TOML_EOF'
+[command]
+name = "/persona-kit.constitution"
+description = "Establish project principles and guidelines"
+
+[parameters]
+none = true
+TOML_EOF
+                cat > "$assistant_dir/commands/personas.toml" << 'TOML_EOF'
+[command]
+name = "/persona-kit.personas"
+description = "Set up team personas for development"
+
+[parameters]
+none = true
+TOML_EOF
+                cat > "$assistant_dir/commands/patterns.toml" << 'TOML_EOF'
+[command]
+name = "/persona-kit.patterns"
+description = "Define communication and development patterns"
+
+[parameters]
+none = true
+TOML_EOF
+                cat > "$assistant_dir/commands/workflows.toml" << 'TOML_EOF'
+[command]
+name = "/persona-kit.workflows"
+description = "Create development workflows"
+
+[parameters]
+none = true
+TOML_EOF
+                cat > "$assistant_dir/commands/implement.toml" << 'TOML_EOF'
+[command]
+name = "/persona-kit.implement"
+description = "Execute implementation phase"
+
+[parameters]
+none = true
+TOML_EOF
                 ;;
             "cursor-agent")
                 echo "# Cursor Agent-specific configuration" > "$assistant_dir/config.txt"
                 echo "Cursor project setup" >> "$assistant_dir/config.txt"
+                # Add basic command TOML files for Cursor
+                cat > "$assistant_dir/commands/constitution.toml" << 'TOML_EOF'
+[command]
+name = "/persona-kit.constitution"
+description = "Establish project principles and guidelines"
+
+[parameters]
+none = true
+TOML_EOF
+                cat > "$assistant_dir/commands/personas.toml" << 'TOML_EOF'
+[command]
+name = "/persona-kit.personas"
+description = "Set up team personas for development"
+
+[parameters]
+none = true
+TOML_EOF
+                cat > "$assistant_dir/commands/patterns.toml" << 'TOML_EOF'
+[command]
+name = "/persona-kit.patterns"
+description = "Define communication and development patterns"
+
+[parameters]
+none = true
+TOML_EOF
+                cat > "$assistant_dir/commands/workflows.toml" << 'TOML_EOF'
+[command]
+name = "/persona-kit.workflows"
+description = "Create development workflows"
+
+[parameters]
+none = true
+TOML_EOF
+                cat > "$assistant_dir/commands/implement.toml" << 'TOML_EOF'
+[command]
+name = "/persona-kit.implement"
+description = "Execute implementation phase"
+
+[parameters]
+none = true
+TOML_EOF
                 ;;
             "gemini")
                 echo "# Gemini-specific configuration" > "$assistant_dir/config.txt"
                 echo "Gemini project setup" >> "$assistant_dir/config.txt"
+                # Add basic command TOML files for Gemini
+                cat > "$assistant_dir/commands/constitution.toml" << 'TOML_EOF'
+[command]
+name = "/persona-kit.constitution"
+description = "Establish project principles and guidelines"
+
+[parameters]
+none = true
+TOML_EOF
+                cat > "$assistant_dir/commands/personas.toml" << 'TOML_EOF'
+[command]
+name = "/persona-kit.personas"
+description = "Set up team personas for development"
+
+[parameters]
+none = true
+TOML_EOF
+                cat > "$assistant_dir/commands/patterns.toml" << 'TOML_EOF'
+[command]
+name = "/persona-kit.patterns"
+description = "Define communication and development patterns"
+
+[parameters]
+none = true
+TOML_EOF
+                cat > "$assistant_dir/commands/workflows.toml" << 'TOML_EOF'
+[command]
+name = "/persona-kit.workflows"
+description = "Create development workflows"
+
+[parameters]
+none = true
+TOML_EOF
+                cat > "$assistant_dir/commands/implement.toml" << 'TOML_EOF'
+[command]
+name = "/persona-kit.implement"
+description = "Execute implementation phase"
+
+[parameters]
+none = true
+TOML_EOF
                 ;;
             *)
                 echo "# ${assistant}-specific configuration" > "$assistant_dir/config.txt"
                 echo "${assistant} project setup" >> "$assistant_dir/config.txt"
+                # Add basic command TOML files for other assistants
+                cat > "$assistant_dir/commands/constitution.toml" << 'TOML_EOF'
+[command]
+name = "/persona-kit.constitution"
+description = "Establish project principles and guidelines"
+
+[parameters]
+none = true
+TOML_EOF
+                cat > "$assistant_dir/commands/personas.toml" << 'TOML_EOF'
+[command]
+name = "/persona-kit.personas"
+description = "Set up team personas for development"
+
+[parameters]
+none = true
+TOML_EOF
+                cat > "$assistant_dir/commands/patterns.toml" << 'TOML_EOF'
+[command]
+name = "/persona-kit.patterns"
+description = "Define communication and development patterns"
+
+[parameters]
+none = true
+TOML_EOF
+                cat > "$assistant_dir/commands/workflows.toml" << 'TOML_EOF'
+[command]
+name = "/persona-kit.workflows"
+description = "Create development workflows"
+
+[parameters]
+none = true
+TOML_EOF
+                cat > "$assistant_dir/commands/implement.toml" << 'TOML_EOF'
+[command]
+name = "/persona-kit.implement"
+description = "Execute implementation phase"
+
+[parameters]
+none = true
+TOML_EOF
                 ;;
         esac
         
