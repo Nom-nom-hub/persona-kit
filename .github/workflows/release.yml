@@ -2,7 +2,7 @@ name: Create Release
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "**" ]
     paths:
       - 'memory/**'
       - 'scripts/**'
@@ -54,7 +54,7 @@ jobs:
         if: steps.check_release.outputs.exists == 'false'
         run: |
           chmod +x .github/workflows/scripts/create-github-release.sh
-          .github/workflows/scripts/create-github-release.sh ${{ steps.get_tag.outputs.new_version }}
+          .github/workflows/scripts/create-github-release.sh ${{ steps.get_tag.outputs.new_version }} release_notes.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

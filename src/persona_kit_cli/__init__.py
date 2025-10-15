@@ -475,10 +475,8 @@ def init_git_repo(project_path: Path, quiet: bool = False) -> Tuple[bool, Option
     finally:
         os.chdir(original_cwd)
 
-def download_template_from_github(ai_assistant: str, download_dir: Path, *, script_type: str = "sh", verbose: bool = True, show_progress: bool = True, client: httpx.Client = None, debug: bool = False, github_token: str = None) -> Tuple[Path, dict]:
+def download_template_from_github(ai_assistant: str, download_dir: Path, *, script_type: str = "sh", verbose: bool = True, show_progress: bool = True, client: httpx.Client = None, debug: bool = False, github_token: str = None, repo_owner: str = "Nom-nom-hub", repo_name: str = "persona-kit") -> Tuple[Path, dict]:
     """Download template from GitHub releases."""
-    repo_owner = "github"
-    repo_name = "persona-kit"
     if client is None:
         client = httpx.Client(verify=ssl_context)
 
@@ -585,6 +583,139 @@ def download_template_from_github(ai_assistant: str, download_dir: Path, *, scri
         "asset_url": download_url
     }
     return zip_path, metadata
+
+def get_release_data(repo_owner: str, repo_name: str, client: httpx.Client, github_token: str = None, verbose: bool = True) -> dict:
+    """Fetch release data from GitHub API."""
+    if client is None:
+        client = httpx.Client(verify=ssl_context)
+
+    if verbose:
+        console.print("[cyan]Fetching latest release information...[/cyan]")
+    api_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/releases/latest"
+
+    try:
+        response = client.get(
+            api_url,
+            timeout=30,
+            follow_redirects=True,
+            headers=_github_auth_headers(github_token),
+        )
+        status = response.status_code
+        if status != 200:
+            msg = f"GitHub API returned {status} for {api_url}"
+            raise RuntimeError(msg)
+        try:
+            release_data = response.json()
+        except ValueError as je:
+            raise RuntimeError(f"Failed to parse release JSON: {je}")
+    except Exception as e:
+        console.print("[red]Error fetching release information[/red]")
+        console.print(Panel(str(e), title="Fetch Error", border_style="red"))
+        raise typer.Exit(1)
+    
+    return release_data
+
+
+def find_matching_asset(assets: list, ai_assistant: str, script_type: str) -> dict:
+    """Find the matching asset based on AI assistant and script type."""
+    pattern = f"persona-kit-template-{ai_assistant}-{script_type}"
+    matching_assets = [
+        asset for asset in assets
+        if pattern in asset["name"] and asset["name"].endswith(".zip")
+    ]
+
+    asset = matching_assets[0] if matching_assets else None
+
+    if asset is None:
+        console.print(f"[red]No matching release asset found[/red] for [bold]{ai_assistant}[/bold] (expected pattern: [bold]{pattern}[/bold])")
+        asset_names = [a.get('name', '?') for a in assets]
+        console.print(Panel("\n".join(asset_names) or "(no assets)", title="Available Assets", border_style="yellow"))
+        raise typer.Exit(1)
+    
+    return asset
+
+
+def download_file(client: httpx.Client, download_url: str, zip_path: Path, show_progress: bool = True, github_token: str = None) -> None:
+    """Download a file from a URL."""
+    try:
+        with client.stream(
+            "GET",
+            download_url,
+            timeout=60,
+            follow_redirects=True,
+            headers=_github_auth_headers(github_token),
+        ) as response:
+            if response.status_code != 200:
+                body_sample = response.text[:400]
+                raise RuntimeError(f"Download failed with {response.status_code}\nHeaders: {response.headers}\nBody (truncated): {body_sample}")
+            total_size = int(response.headers.get('content-length', 0))
+            with open(zip_path, 'wb') as f:
+                if total_size == 0:
+                    for chunk in response.iter_bytes(chunk_size=8192):
+                        f.write(chunk)
+                else:
+                    if show_progress:
+                        with Progress(
+                            SpinnerColumn(),
+                            TextColumn("[progress.description]{task.description}"),
+                            TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
+                            console=console,
+                        ) as progress:
+                            task = progress.add_task("Downloading...", total=total_size)
+                            downloaded = 0
+                            for chunk in response.iter_bytes(chunk_size=8192):
+                                f.write(chunk)
+                                downloaded += len(chunk)
+                                progress.update(task, completed=downloaded)
+                    else:
+                        for chunk in response.iter_bytes(chunk_size=8192):
+                            f.write(chunk)
+    except Exception as e:
+        console.print("[red]Error downloading template[/red]")
+        detail = str(e)
+        if zip_path.exists():
+            zip_path.unlink()
+        console.print(Panel(detail, title="Download Error", border_style="red"))
+        raise typer.Exit(1)
+
+
+def download_template_from_github(ai_assistant: str, download_dir: Path, *, script_type: str = "sh", verbose: bool = True, show_progress: bool = True, client: httpx.Client = None, debug: bool = False, github_token: str = None, repo_owner: str = "Nom-nom-hub", repo_name: str = "persona-kit") -> Tuple[Path, dict]:
+    """Download template from GitHub releases."""
+    # Get release data
+    release_data = get_release_data(repo_owner, repo_name, client, github_token, verbose)
+    
+    # Find matching asset
+    assets = release_data.get("assets", [])
+    asset = find_matching_asset(assets, ai_assistant, script_type)
+    
+    # Prepare download
+    download_url = asset["browser_download_url"]
+    filename = asset["name"]
+    file_size = asset["size"]
+
+    if verbose:
+        console.print(f"[cyan]Found template:[/cyan] {filename}")
+        console.print(f"[cyan]Size:[/cyan] {file_size:,} bytes")
+        console.print(f"[cyan]Release:[/cyan] {release_data['tag_name']}")
+
+    zip_path = download_dir / filename
+    if verbose:
+        console.print(f"[cyan]Downloading template...[/cyan]")
+
+    # Perform download
+    download_file(client, download_url, zip_path, show_progress, github_token)
+    
+    if verbose:
+        console.print(f"Downloaded: {filename}")
+        
+    metadata = {
+        "filename": filename,
+        "size": file_size,
+        "release": release_data["tag_name"],
+        "asset_url": download_url
+    }
+    return zip_path, metadata
+
 
 def download_and_extract_template(project_path: Path, ai_assistant: str, script_type: str, is_current_dir: bool = False, *, verbose: bool = True, tracker: StepTracker | None = None, client: httpx.Client = None, debug: bool = False, github_token: str = None) -> Path:
     """Download the latest release and extract it to create a new project."""
