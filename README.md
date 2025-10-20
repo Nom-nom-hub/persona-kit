@@ -74,20 +74,20 @@ Unlike traditional development approaches, Persona Kit allows you to:
 
 ```bash
 # Install persona-kit as a global tool
-uv tool install personakit-cli --from git+https://github.com/Nom-nom-hub/persona-kit.git
+uv tool install persona-kit --from git+https://github.com/Nom-nom-hub/persona-kit.git
 
-# The tool is now available as 'personakit' command
-personakit init <PROJECT_NAME>
+# The tool is now available as 'persona-kit' command
+persona-kit init <PROJECT_NAME>
 ```
 
 #### Option 2: Use with uvx (No installation required)
 
 ```bash
 # Run directly with uvx (requires uv installed)
-uvx --from git+https://github.com/Nom-nom-hub/persona-kit.git personakit init <PROJECT_NAME>
+uvx --from git+https://github.com/Nom-nom-hub/persona-kit.git persona-kit init <PROJECT_NAME>
 
 # Or initialize in current directory
-uvx --from git+https://github.com/Nom-nom-hub/persona-kit.git personakit init --here
+uvx --from git+https://github.com/Nom-nom-hub/persona-kit.git persona-kit init --here
 ```
 
 #### Option 3: Traditional installation (For development)
@@ -105,27 +105,27 @@ uv pip install -e .
 
 ```bash
 # Initialize persona-kit in your project
-personakit init <PROJECT_NAME>
+persona-kit init <PROJECT_NAME>
 
 # Or initialize in current directory
-personakit init --here
+persona-kit init --here
 
 # Or use with uvx (no installation required)
-uvx --from git+https://github.com/Nom-nom-hub/persona-kit.git personakit init <PROJECT_NAME>
+uvx --from git+https://github.com/Nom-nom-hub/persona-kit.git persona-kit init <PROJECT_NAME>
 ```
 
 ### 3. Create Your First Persona
 
 ```bash
 # Create a development persona
-personakit persona create "Senior Python Developer" --role developer --expertise python,architecture,testing
+persona-kit persona create "Senior Python Developer" --role developer --expertise python,architecture,testing
 ```
 
 ### 4. Set Up a Workflow
 
 ```bash
 # Create a standard development workflow
-personakit workflow create "feature-development" --template feature
+persona-kit workflow create "feature-development" --template feature
 ```
 
 ## 📁 Project Structure
@@ -182,7 +182,7 @@ Personas define AI behaviors, knowledge domains, and interaction patterns:
 
 ```bash
 # Create a specialized persona
-personakit persona create "Code Reviewer" \
+persona-kit persona create "Code Reviewer" \
   --role reviewer \
   --expertise "code-quality,security,best-practices" \
   --personality "thorough,constructive,detail-oriented"
@@ -192,13 +192,13 @@ personakit persona create "Code Reviewer" \
 
 ```bash
 # Switch to a persona for a session
-personakit persona use "Senior Developer"
+persona-kit persona use "Senior Developer"
 
 # List available personas
-personakit persona list
+persona-kit persona list
 
 # Show current persona details
-personakit persona show
+persona-kit persona show
 ```
 
 ## 🔄 Workflows
@@ -215,7 +215,7 @@ personakit persona show
 
 ```bash
 # Create a custom workflow
-personakit workflow create "api-development" \
+persona-kit workflow create "api-development" \
   --steps "design,implement,test,document" \
   --personas "architect,developer,tester"
 ```
@@ -248,7 +248,7 @@ uv run black src/
 uv run isort src/
 
 # Install as a tool for testing
-uv tool install personakit-cli --from git+https://github.com/Nom-nom-hub/persona-kit.git
+uv tool install persona-kit --from git+https://github.com/Nom-nom-hub/persona-kit.git
 ```
 
 ## 📄 License

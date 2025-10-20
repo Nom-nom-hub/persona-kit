@@ -15,7 +15,7 @@ dependencies = [
 ]
 
 [project.scripts]
-personakit = "src.persona_kit_cli:main"
+persona-kit = "src.persona_kit_cli:main"
 
 [build-system]
 requires = ["hatchling"]

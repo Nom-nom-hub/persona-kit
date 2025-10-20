@@ -19,7 +19,7 @@ Usage:
     uvx persona-kit-cli.py init --here
 
 Or install globally:
-    uv tool install --from persona-kit-cli.py persona-kit
+    uv tool install persona-kit --from git+https://github.com/Nom-nom-hub/persona-kit.git
     persona-kit init <project-name>
     persona-kit init .
     persona-kit init --here
