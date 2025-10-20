@@ -5,7 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.5] - 2025-10-14 (latest)
+## [0.0.21] - 2025-10-20
+
+### Fixed
+- **CLI Installation Error**: Fixed naming mismatch between script entry point and installation command
+  - Changed script entry point from `personakit` to `persona-kit` in `pyproject.toml`
+  - Updated all documentation to use `persona-kit` consistently
+  - Users can now successfully install with `uv tool install persona-kit --from git+https://github.com/Nom-nom-hub/persona-kit.git`
+
+### Changed
+- **CLI Command Rename**: Renamed CLI command from `personakit` to `persona-kit` for consistency
+- **Documentation Updates**: Updated all installation and usage examples to use correct command name
+
+## [0.0.20] - 2025-10-19
+
+### Added
+- Recent git commits and improvements since v0.0.19
+
+## [0.0.5] - 2025-10-14
 
 ### Added
 - Initial release of Persona Kit
@@ -109,6 +126,8 @@ When contributing to this project, please ensure you update the changelog with y
 
 ## Version History
 
+- **v0.0.21** (2025-10-20) - CLI installation fix and command rename
+- **v0.0.20** (2025-10-19) - Latest stable release
 - **v0.0.5** (2025-10-14) - First stable release
 - **v0.0.4** (2025-10-13) - Beta release with core features
 - **v0.0.3** (2025-10-12) - Initial development version

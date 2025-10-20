@@ -1,6 +1,6 @@
 [project]
 name = "persona-kit"
-version = "0.0.5"
+version = "0.0.20"
 description = "A toolkit for persona-driven development workflows and AI agent management."
 requires-python = ">=3.11"
 dependencies = [
